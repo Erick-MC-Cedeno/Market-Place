@@ -6,14 +6,14 @@ export class EmailService {
   private transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-      user: 'erickcedeno558@gmail.com',
-      pass: 'kefo uixq iauf vstq',
+      user: 'EMAIL',
+      pass: 'Password',
     },
   });
 
   async sendTokenLogin(toEmail: string, token: string): Promise<void> {
     const mailOptions = {
-      from: 'BlockVault <noreply@nextcryptoatm.com>',
+      from: 'BlockVault <noreply@marketplace.com>',
       to: toEmail,
       subject: 'Token de verificación para iniciar sesión',
       html: `
@@ -62,7 +62,7 @@ export class EmailService {
                 </div>
                 <div class="footer">
                     <p>Si tienes alguna pregunta, no dudes en contactarnos.</p>
-                    <p>Gracias por usar BlockVault.</p>
+                    <p>Gracias por usar MarketPlace.</p>
                 </div>
             </div>
         </body>
@@ -99,7 +99,7 @@ export class EmailService {
 
   async sendLoginNotificationEmail(toEmail: string): Promise<void> {
     const mailOptions = {
-      from: 'BlockVault <noreply@nextcryptoatm.com>',
+      from: 'MarketPlace <noreply@marketplace.com>',
       to: toEmail,
       subject: 'Notificación de Inicio de sesión',
       html: `
@@ -123,7 +123,7 @@ export class EmailService {
         <body>
             <div class="container">
                 <div class="header">
-                    <h1>BlockVault</h1>
+                    <h1>MarketPlace</h1>
                 </div>
                 <div class="content">
                     <p>Hola,</p>
@@ -143,7 +143,7 @@ export class EmailService {
                 </div>
                 <div class="footer">
                     <p>Si tienes alguna pregunta, no dudes en contactarnos.</p>
-                    <p>Gracias por usar BlockVault.</p>
+                    <p>Gracias por usar MarketPlace.</p>
                 </div>
             </div>
         </body>
