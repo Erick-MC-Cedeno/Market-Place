@@ -3,13 +3,13 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Product } from './schemas/product.schema';
 import { CreateProductDto } from './dto/create.product.dto';
-import { User } from '../user/schemas/user.schema'; 
+import { User } from '../user/schemas/user.schema';
 
 @Injectable()
 export class ProductService {
   constructor(
     @InjectModel(Product.name) private productModel: Model<Product>,
-    @InjectModel(User.name) private userModel: Model<User>, 
+    @InjectModel(User.name) private userModel: Model<User>,
   ) {}
 
   async createProduct(createProductDto: CreateProductDto): Promise<Product> {
@@ -34,8 +34,9 @@ export class ProductService {
       }
       const product = new this.productModel({
         name: createProductDto.name,
-        photo: base64Image, 
+        photo: base64Image,
         user: user[0]._id,
+        category: createProductDto.category, 
       });
       await product.save();
       return product;
@@ -43,7 +44,6 @@ export class ProductService {
       throw new InternalServerErrorException('Error al crear el producto: ' + error.message);
     }
   }
-  
 
   async getAllProducts(): Promise<any[]> {
     try {
@@ -57,28 +57,29 @@ export class ProductService {
           },
         },
         { $unwind: '$user' },
-        { 
-          $project: { 
-            name: 1, 
-            photo: 1, 
-            createdAt: 1, 
-            updatedAt: 1 
+        {
+          $project: {
+            name: 1,
+            photo: 1,
+            createdAt: 1,
+            updatedAt: 1,
+            category: 1, 
           },
         },
       ]);
       if (!products || products.length === 0) {
-        throw new NotFoundException('No se encontraron productos.');
+        return [{ message: 'Aún no hay productos.' }];
       }
       const productData = products.map((product) => ({
         name: product.name,
         photo: `data:image/jpeg;base64,${product.photo}`,
         createdAt: product.createdAt,
         updatedAt: product.updatedAt,
+        category: product.category, 
       }));
       return productData;
     } catch (error) {
       throw new InternalServerErrorException('Error al obtener los productos: ' + error.message);
     }
   }
-  
 }

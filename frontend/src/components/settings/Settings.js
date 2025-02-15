@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next'; // Importar useTranslation
+import { useTranslation } from 'react-i18next'; 
 import ChangePasswordComponent from './ChangePasswordComponent';
 import TwoFactorAuthComponent from './TwoFactorAuthComponent';
 import LanguageSelectorComponent from './LanguageSelectorComponent';
@@ -70,14 +70,15 @@ function Settings() {
                                 onClick={() => setSelectedSection(id)}
                                 selected={selectedSection === id}
                                 sx={{
-                                    bgcolor: selectedSection === id ? theme.palette.primary.light : 'transparent',
+                                    bgcolor: selectedSection === id ? '#A5D6A7' : 'transparent', 
+                                    color: selectedSection === id ? '#FFFFFF' : 'inherit', 
                                     '&:hover': {
-                                        bgcolor: theme.palette.primary.main,
-                                        color: '#FFFFFF',
+                                        bgcolor: '#4CAF50',
+                                        color: '#FFFFFF', 
                                     },
                                 }}
                             >
-                                <ListItemIcon sx={{ fontSize: isMobile ? 20 : 24 }}>{icon}</ListItemIcon>
+                                <ListItemIcon sx={{ fontSize: isMobile ? 20 : 24, color: selectedSection === id ? '#FFFFFF' : 'inherit' }}>{icon}</ListItemIcon>
                                 <ListItemText
                                     primary={t(label)} 
                                     sx={{
@@ -97,13 +98,14 @@ function Settings() {
                             to="/"
                             sx={{
                                 marginTop: 'auto', 
+                                color: 'inherit',
                                 '&:hover': {
-                                    bgcolor: theme.palette.primary.main,
-                                    color: '#FFFFFF',
+                                    bgcolor: '#4CAF50', 
+                                    color: '#FFFFFF', 
                                 },
                             }}
                         >
-                            <ListItemIcon sx={{ fontSize: isMobile ? 20 : 24 }}><ArrowBackIcon /></ListItemIcon>
+                            <ListItemIcon sx={{ fontSize: isMobile ? 20 : 24, color: 'inherit' }}><ArrowBackIcon /></ListItemIcon>
                             <ListItemText
                                 primary={t('go_back')} 
                                 sx={{

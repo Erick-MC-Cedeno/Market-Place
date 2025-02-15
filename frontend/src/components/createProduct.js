@@ -1,5 +1,6 @@
 import React, { useState, useContext } from 'react';
-import { Box, TextField, Button, Typography, CircularProgress } from '@mui/material';
+import { Box, TextField, Button, Typography, CircularProgress, MenuItem, Select, InputLabel, FormControl, Paper } from '@mui/material';
+import { useHistory } from 'react-router-dom';
 import useProducts from '../hooks/useProducts'; 
 import { AuthContext } from '../hooks/AuthContext';
 
@@ -9,6 +10,8 @@ function CreateProduct() {
     const [name, setName] = useState(''); 
     const [photo, setPhoto] = useState(null); 
     const [preview, setPreview] = useState(''); 
+    const [category, setCategory] = useState(''); 
+    const history = useHistory();
 
     const handlePhotoChange = (e) => {
         const file = e.target.files[0];
@@ -25,7 +28,7 @@ function CreateProduct() {
     const handleSubmit = async (e) => {
         e.preventDefault(); 
 
-        if (!name || !photo || !auth?.email) {
+        if (!name || !photo || !auth?.email || !category) {
             alert('Por favor, completa todos los campos.');
             return;
         }
@@ -34,27 +37,33 @@ function CreateProduct() {
         formData.append('name', name);
         formData.append('email', auth.email);
         formData.append('photo', photo); 
+        formData.append('category', category); 
 
         await createProduct(formData);
 
         setName('');
         setPhoto(null);
         setPreview('');
+        setCategory(''); 
+    };
+
+    const handleBack = () => {
+        history.push('/');
     };
 
     return (
-        <Box
+        <Paper
+            elevation={3}
             sx={{
                 marginTop: 4,
-                padding: 3,
-                maxWidth: 500,
+                padding: 4,
+                maxWidth: 600,
                 margin: '0 auto',
-                boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
-                borderRadius: 2,
-                bgcolor: 'white',
+                borderRadius: 3,
+                bgcolor: '#f9f9f9',
             }}
         >
-            <Typography variant="h5" sx={{ mb: 3, color: '#4CAF50', textAlign: 'center' }}>
+            <Typography variant="h4" sx={{ mb: 4, color: '#4CAF50', textAlign: 'center', fontWeight: 'bold' }}>
                 Crear Nuevo Producto
             </Typography>
 
@@ -67,6 +76,21 @@ function CreateProduct() {
                     sx={{ mb: 3 }}
                     required
                 />
+
+                <FormControl fullWidth sx={{ mb: 3 }}>
+                    <InputLabel id="category-label">Categoría del Producto</InputLabel>
+                    <Select
+                        labelId="category-label"
+                        value={category}
+                        onChange={(e) => setCategory(e.target.value)}
+                        label="Categoría del Producto"
+                        required
+                    >
+                        <MenuItem value="electronics">Electronics</MenuItem>
+                        <MenuItem value="clothes">Clothes</MenuItem>
+                        <MenuItem value="vehicles">Vehicles</MenuItem>
+                    </Select>
+                </FormControl>
 
                 <Box sx={{ mb: 3 }}>
                     <input
@@ -91,7 +115,7 @@ function CreateProduct() {
                         </Button>
                     </label>
                     {preview && (
-                        <Box sx={{ mt: 2 }}>
+                        <Box sx={{ mt: 2, textAlign: 'center' }}>
                             <Typography variant="body2" sx={{ mb: 1 }}>
                                 Vista previa:
                             </Typography>
@@ -113,6 +137,7 @@ function CreateProduct() {
                         '&:hover': { bgcolor: '#45a049' },
                         color: 'white',
                         mb: 2,
+                        fontWeight: 'bold',
                     }}
                     disabled={loading} 
                 >
@@ -123,13 +148,27 @@ function CreateProduct() {
                     )}
                 </Button>
 
+                <Button
+                    fullWidth
+                    variant="outlined"
+                    sx={{
+                        color: '#4CAF50',
+                        borderColor: '#4CAF50',
+                        '&:hover': { bgcolor: 'rgba(76, 175, 80, 0.1)' },
+                        fontWeight: 'bold',
+                    }}
+                    onClick={handleBack}
+                >
+                    Regresar
+                </Button>
+
                 {error && (
                     <Typography color="error" sx={{ mt: 2, textAlign: 'center' }}>
                         Error: {error}
                     </Typography>
                 )}
             </form>
-        </Box>
+        </Paper>
     );
 }
 

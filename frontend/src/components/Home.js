@@ -19,6 +19,7 @@ import {
     Button,
     useMediaQuery,
     useTheme,
+    Grid,
 } from '@mui/material';
 import { useHistory } from 'react-router-dom';
 import {
@@ -78,6 +79,8 @@ function DashboardContent() {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
     const { products, loading, error } = useProducts();
+    const [selectedCategory, setSelectedCategory] = useState('all'); // Nuevo estado
+
     const handleCloseUserMenu = () => setAnchorElUser(null);
     const handleOpenUserMenu = (event) => setAnchorElUser(event.currentTarget);
 
@@ -97,7 +100,6 @@ function DashboardContent() {
     };
 
     const handleContactClick = () => {
-        
         alert('¡Se ha hecho clic en Contactar!');
     };
 
@@ -106,6 +108,14 @@ function DashboardContent() {
         const color = colors[name.charCodeAt(0) % colors.length];
         return color;
     };
+
+    const handleCategoryChange = (category) => {
+        setSelectedCategory(category);
+    };
+
+    const filteredProducts = selectedCategory === 'all'
+        ? products
+        : products.filter(product => product.category === selectedCategory);
 
     if (!auth) return null;
 
@@ -116,7 +126,7 @@ function DashboardContent() {
     ];
 
     const navItems = [
-        { href: '/create', label: 'Productos' },
+        { href: '/create', label: 'Vender productos' },
         { href: '/contactanos', label: 'Contáctanos' },
         { href: '/ubicaciones', label: 'Ubicaciones' },
     ];
@@ -260,74 +270,132 @@ function DashboardContent() {
                 <Typography variant="h4" sx={{ mb: 3, color: '#4CAF50' }}>
                     Lista de Productos
                 </Typography>
-                {loading ? (
-                    <Typography>Cargando productos...</Typography>
-                ) : error ? (
-                    <Typography color="error">Error: {error}</Typography>
-                ) : (
-                    <Box
+
+                <Box sx={{ display: 'flex', mb: 3 }}>
+                    <Button
+                        variant={selectedCategory === 'all' ? 'contained' : 'outlined'}
+                        onClick={() => handleCategoryChange('all')}
                         sx={{
-                            display: 'flex',
-                            flexWrap: 'wrap',
-                            gap: 2,
-                            justifyContent: 'space-between',
+                            mr: 2,
+                            bgcolor: selectedCategory === 'all' ? '#4CAF50' : 'transparent',
+                            color: selectedCategory === 'all' ? 'white' : '#4CAF50',
+                            '&:hover': {
+                                bgcolor: selectedCategory === 'all' ? '#388E3C' : 'rgba(76, 175, 80, 0.1)',
+                            },
                         }}
                     >
-                        {products.map((product, index) => (
-                            <Box
-                                key={index}
-                                sx={{
-                                    width: 'calc(33.33% - 16px)', 
-                                    mb: 2,
-                                    p: 2,
-                                    border: '1px solid #ddd',
-                                    borderRadius: 2,
-                                    boxSizing: 'border-box',
-                                    overflow: 'hidden',
-                                }}
-                            >
-                                <Typography variant="h6">{product.name}</Typography>
-                                {product.photo && (
-                                    <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
-                                        <a href={product.photo} target="_blank" rel="noopener noreferrer">
-                                            <img
-                                                src={product.photo}
-                                                alt={product.name}
-                                                style={{
-                                                    width: '100%',
-                                                    height: '200px',  
-                                                    objectFit: 'cover',  
-                                                    borderRadius: 4,
-                                                    cursor: 'pointer',
-                                                }}
-                                            />
-                                        </a>
-                                    </Box>
-                                )}
-                                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 2 }}>
-                                    <Typography variant="body1" sx={{ color: '#4CAF50' }}>
-                                        Creado el: {new Date(product.createdAt).toLocaleDateString()}
-                                    </Typography>
-                                    <Button
-                                        variant="contained"
-                                        sx={{
-                                            bgcolor: '#4CAF50',
-                                            '&:hover': {
-                                                bgcolor: '#388E3C',
-                                            },
-                                            color: 'white',
-                                            textTransform: 'none',
-                                            fontWeight: 'bold',
-                                        }}
-                                        onClick={handleContactClick}
-                                    >
-                                        Contactar
-                                    </Button>
-                                </Box>
-                            </Box>
-                        ))}
-                    </Box>
-                )}
+                        All
+                    </Button>
+                    <Button
+                        variant={selectedCategory === 'electronics' ? 'contained' : 'outlined'}
+                        onClick={() => handleCategoryChange('electronics')}
+                        sx={{
+                            mr: 2,
+                            bgcolor: selectedCategory === 'electronics' ? '#4CAF50' : 'transparent',
+                            color: selectedCategory === 'electronics' ? 'white' : '#4CAF50',
+                            '&:hover': {
+                                bgcolor: selectedCategory === 'electronics' ? '#388E3C' : 'rgba(76, 175, 80, 0.1)',
+                            },
+                        }}
+                    >
+                        Electronics
+                    </Button>
+                    <Button
+                        variant={selectedCategory === 'clothes' ? 'contained' : 'outlined'}
+                        onClick={() => handleCategoryChange('clothes')}
+                        sx={{
+                            mr: 2,
+                            bgcolor: selectedCategory === 'clothes' ? '#4CAF50' : 'transparent',
+                            color: selectedCategory === 'clothes' ? 'white' : '#4CAF50',
+                            '&:hover': {
+                                bgcolor: selectedCategory === 'clothes' ? '#388E3C' : 'rgba(76, 175, 80, 0.1)',
+                            },
+                        }}
+                    >
+                        Clothes
+                    </Button>
+                    <Button
+                        variant={selectedCategory === 'vehicles' ? 'contained' : 'outlined'}
+                        onClick={() => handleCategoryChange('vehicles')}
+                        sx={{
+                            bgcolor: selectedCategory === 'vehicles' ? '#4CAF50' : 'transparent',
+                            color: selectedCategory === 'vehicles' ? 'white' : '#4CAF50',
+                            '&:hover': {
+                                bgcolor: selectedCategory === 'vehicles' ? '#388E3C' : 'rgba(76, 175, 80, 0.1)',
+                            },
+                        }}
+                    >
+                        Vehicles
+                    </Button>
+                </Box>
+
+                <Grid container spacing={2}>
+                    <Grid item xs={12}>
+                        {loading ? (
+                            <Typography>Cargando productos...</Typography>
+                        ) : error ? (
+                            <Typography color="error">Error: {error}</Typography>
+                        ) : filteredProducts.length === 0 ? (
+                            <Typography>Aún no hay productos.</Typography>
+                        ) : (
+                            <Grid container spacing={2}>
+                                {filteredProducts.map((product, index) => (
+                                    <Grid item xs={12} sm={6} md={3} key={index}>
+                                        <Box
+                                            sx={{
+                                                mb: 2,
+                                                p: 2,
+                                                border: '1px solid #ddd',
+                                                borderRadius: 2,
+                                                boxSizing: 'border-box',
+                                                overflow: 'hidden',
+                                            }}
+                                        >
+                                            <Typography variant="h6">{product.name}</Typography>
+                                            {product.photo && (
+                                                <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+                                                    <a href={product.photo} target="_blank" rel="noopener noreferrer">
+                                                        <img
+                                                            src={product.photo}
+                                                            alt={product.name}
+                                                            style={{
+                                                                width: '100%',
+                                                                height: '200px',  
+                                                                objectFit: 'cover',  
+                                                                borderRadius: 4,
+                                                                cursor: 'pointer',
+                                                            }}
+                                                        />
+                                                    </a>
+                                                </Box>
+                                            )}
+                                            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 2 }}>
+                                                <Typography variant="body1" sx={{ color: '#4CAF50' }}>
+                                                    Creado el: {new Date(product.createdAt).toLocaleDateString() !== 'Invalid Date' ? new Date(product.createdAt).toLocaleDateString() : 'Fecha no válida'}
+                                                </Typography>
+                                                <Button
+                                                    variant="contained"
+                                                    sx={{
+                                                        bgcolor: '#4CAF50',
+                                                        '&:hover': {
+                                                            bgcolor: '#388E3C',
+                                                        },
+                                                        color: 'white',
+                                                        textTransform: 'none',
+                                                        fontWeight: 'bold',
+                                                    }}
+                                                    onClick={handleContactClick}
+                                                >
+                                                    Contactar
+                                                </Button>
+                                            </Box>
+                                        </Box>
+                                    </Grid>
+                                ))}
+                            </Grid>
+                        )}
+                    </Grid>
+                </Grid>
             </Box>
         </>
     );

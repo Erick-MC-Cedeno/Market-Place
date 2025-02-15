@@ -5,7 +5,6 @@ export class CreateProductDto {
   @IsNotEmpty()
   name: string;
 
- 
   @IsOptional()
   photo: Buffer;
 
@@ -14,4 +13,8 @@ export class CreateProductDto {
   @IsEmail()
   @IsLowercase()
   email: string;
+
+  @IsString()
+  @IsNotEmpty()
+  category: string; 
 }
