@@ -25,6 +25,12 @@ nest start
 # Login
 ![Login](frontend/src/assets/screenshots/login.png)
 
+# verify token
+![verifytoken](frontend/src/assets/screenshots/verifytoken.png)
+
+# Resend token
+![Resend token](frontend/src/assets/screenshots/resentoken.png)
+
 # Register
 ![Register](frontend/src/assets/screenshots/register.png)
 
