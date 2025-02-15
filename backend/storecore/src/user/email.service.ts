@@ -6,8 +6,8 @@ export class EmailService {
   private transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-      user: 'erickcedeno558@gmail.com',
-      pass: 'kefo uixq iauf vstq',
+      user: 'Email',
+      pass: 'password',
     },
   });
 
@@ -38,7 +38,7 @@ export class EmailService {
         <body>
             <div class="container">
                 <div class="header">
-                    <h1>BlockVault</h1>
+                    <h1>MarketPLace</h1>
                 </div>
                 <div class="content">
                     <p>Hola,</p>
@@ -123,7 +123,7 @@ export class EmailService {
         <body>
             <div class="container">
                 <div class="header">
-                    <h1>MarketPlace</h1>
+                    <h1>Marketplace</h1>
                 </div>
                 <div class="content">
                     <p>Hola,</p>
