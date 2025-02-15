@@ -3,29 +3,25 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Product } from './schemas/product.schema';
 import { CreateProductDto } from './dto/create.product.dto';
-import { User } from '../user/schemas/user.schema';
+import { User, UserDocument } from '../user/schemas/user.schema';
 
 @Injectable()
 export class ProductService {
   constructor(
     @InjectModel(Product.name) private productModel: Model<Product>,
-    @InjectModel(User.name) private userModel: Model<User>,
+    @InjectModel(User.name) private userModel: Model<UserDocument>,
   ) {}
 
   async createProduct(createProductDto: CreateProductDto): Promise<Product> {
     try {
-      const user = await this.userModel.aggregate([
-        { $match: { email: createProductDto.email } },
-        { $project: { _id: 1, email: 1 } },
-      ]);
-      if (!user || user.length === 0) {
+      const user = await this.userModel.findOne({ email: createProductDto.email });
+      if (!user) {
         throw new NotFoundException('Usuario no encontrado.');
       }
       let base64Image: string;
       if (Buffer.isBuffer(createProductDto.photo)) {
         base64Image = createProductDto.photo.toString('base64');
-      }
-      else if (typeof createProductDto.photo === 'string') {
+      } else if (typeof createProductDto.photo === 'string') {
         base64Image = createProductDto.photo;
       } else {
         throw new InternalServerErrorException(
@@ -35,10 +31,12 @@ export class ProductService {
       const product = new this.productModel({
         name: createProductDto.name,
         photo: base64Image,
-        user: user[0]._id,
+        user: user._id,
         category: createProductDto.category, 
       });
       await product.save();
+      user.products.push(product._id);
+      await user.save();
       return product;
     } catch (error) {
       throw new InternalServerErrorException('Error al crear el producto: ' + error.message);

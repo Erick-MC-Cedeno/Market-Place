@@ -1,7 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 export type UserDocument = User & Document;
-import { Product } from '../../products/schemas/product.schema';
 
 
 @Schema()
@@ -24,7 +23,7 @@ export class User {
     password: string;
 
     @Prop({ type: [{ type: Types.ObjectId, ref: 'Product' }] })
-  products: Product[];
+    products: Types.ObjectId[];
 
     _id?: string; 
 
