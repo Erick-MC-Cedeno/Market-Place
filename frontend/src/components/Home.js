@@ -359,8 +359,8 @@ function DashboardContent() {
                                                             src={product.photo}
                                                             alt={product.name}
                                                             style={{
-                                                                width: '100%',
-                                                                height: '200px',  
+                                                                width: '100%', 
+                                                                height: '220px',
                                                                 objectFit: 'cover',  
                                                                 borderRadius: 4,
                                                                 cursor: 'pointer',
