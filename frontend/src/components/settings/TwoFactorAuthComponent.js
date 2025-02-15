@@ -13,10 +13,12 @@ import {
   DialogTitle,
   Button,
   Paper,
-  Snackbar
+  Snackbar,
+  IconButton
 } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import WarningIcon from '@mui/icons-material/Warning';
+import CloseIcon from '@mui/icons-material/Close';
 import MuiAlert from '@mui/material/Alert';
 
 const TwoFactorAuthComponent = () => {
@@ -94,7 +96,7 @@ const TwoFactorAuthComponent = () => {
   return (
     <Paper elevation={3} sx={{ padding: 3, borderRadius: 2, maxWidth: 400, margin: 'auto' }}>
       <Typography variant="h5" gutterBottom>
-        2FA Auth
+        Autenticación de Dos Factores
       </Typography>
       <FormControlLabel
         control={<Switch checked={isTokenEnabled} onChange={toggleTwoFactorAuth} color="primary" />}
@@ -114,12 +116,17 @@ const TwoFactorAuthComponent = () => {
         </Box>
       )}
 
-      <Dialog open={confirmDialogOpen} onClose={() => handleConfirmDialogClose(false)} PaperProps={{ sx: { margin: 'auto' } }}>
-        <DialogTitle>Confirmar Desactivación</DialogTitle>
+      <Dialog open={confirmDialogOpen} onClose={() => handleConfirmDialogClose(false)} PaperProps={{ sx: { margin: 'auto', borderRadius: 2, padding: 2, maxWidth: 500 } }}>
+        <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          Confirmar Desactivación
+          <IconButton onClick={() => handleConfirmDialogClose(false)}>
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
         <DialogContent>
           <Typography>¿Estás seguro de que deseas desactivar la autenticación de dos factores? Esto pone en riesgo tu cuenta a cibercriminales.</Typography>
         </DialogContent>
-        <DialogActions>
+        <DialogActions sx={{ justifyContent: 'space-between', padding: 2 }}>
           <Button onClick={() => handleConfirmDialogClose(false)} color="error" variant="contained">Cancelar</Button>
           <Button onClick={() => handleConfirmDialogClose(true)} color="primary" variant="contained">Desactivar</Button>
         </DialogActions>
