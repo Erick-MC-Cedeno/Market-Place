@@ -12,9 +12,9 @@
 
 
 # Setup node env 
-
+```
 $ set NODE_OPTIONS=--openssl-legacy-provider
-
+```
 
 # Start frontend
 ```
