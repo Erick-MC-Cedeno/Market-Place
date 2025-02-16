@@ -11,16 +11,16 @@
 
 
 
-# SETUP NODE ENV  
+# Setup node env 
 
 $ set NODE_OPTIONS=--openssl-legacy-provider
 
-# START FRONTEND
+# Start frontend
 $ cd frontend  
 $ npm install  
 $ npm start  
 
-# START APP-CORE
+# Start app-core
 $ cd backend/storecore
 $ npm i -g @nestjs/cli  
 $ npm install  
