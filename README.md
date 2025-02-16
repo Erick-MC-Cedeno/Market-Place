@@ -24,12 +24,13 @@ $ npm start
 ```
 
 # Start storecore
+```
 $ cd backend/storecore
-
 $ npm i -g @nestjs/cli  
 $ npm install  
 $ nest start --watch (listening mode)  
-$ nest start  
+$ nest start
+```
 
 
 
