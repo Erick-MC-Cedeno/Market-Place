@@ -12,24 +12,25 @@
 # still in development
 
 
-## SETUP NODE ENV 
-set NODE_OPTIONS=--openssl-legacy-provider
+# SETUP NODE ENV  
 
-## START FRONTEND
-cd frontend  
-npm install  
-npm start  
+$set NODE_OPTIONS=--openssl-legacy-provider
 
-## START APP-CORE
-cd backend/storecore
-npm i -g @nestjs/cli  
-npm install  
-nest start --watch (listening mode)  
-nest start  
+# START FRONTEND
+$ cd frontend  
+$ npm install  
+$ npm start  
+
+# START APP-CORE
+$ cd backend/storecore
+$ npm i -g @nestjs/cli  
+$ npm install  
+$ nest start --watch (listening mode)  
+$ nest start  
 
 
 
-### Screenshots
+# Screenshots
 # Login
 ![Login](frontend/src/assets/screenshots/login.png)
 
