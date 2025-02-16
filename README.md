@@ -1,4 +1,4 @@
-# Market-Place
+# Market-Place still in development
 
 # 🛠️ Tecnologías Stack
 
@@ -9,7 +9,6 @@
 ![Redis](https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=redis&logoColor=white)
 
 
-# still in development
 
 
 # SETUP NODE ENV  
