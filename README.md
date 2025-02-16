@@ -16,7 +16,8 @@
 $ set NODE_OPTIONS=--openssl-legacy-provider
 
 
-```# Start frontend
+# Start frontend
+```
 $ cd frontend  
 $ npm install  
 $ npm start
