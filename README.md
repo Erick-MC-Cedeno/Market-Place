@@ -20,7 +20,7 @@ $ cd frontend
 $ npm install  
 $ npm start  
 
-# Start app-core
+# Start storecore
 $ cd backend/storecore
 $ npm i -g @nestjs/cli  
 $ npm install  
