@@ -51,5 +51,5 @@ $ nest start
 ![Settings](frontend/src/assets/screenshots/settings.png)
 
 # DEMO VIDEO
-<img src="frontend/src/assets/screenshots/silk.gif" width="600" alt="Demo Video">
+<img src="frontend/src/assets/screenshots/silk.gif" width="600" height="400" alt="Demo Video">
 
