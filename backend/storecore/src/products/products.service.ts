@@ -12,24 +12,32 @@ export class ProductService {
     @InjectModel(User.name) private userModel: Model<UserDocument>,
   ) {}
 
+  private async validateUser(email: string): Promise<UserDocument> {
+    const user = await this.userModel.findOne({ email });
+    if (!user) {
+      throw new NotFoundException('Usuario no encontrado.');
+    }
+    return user;
+  }
+
+  private convertPhotoToBase64(photo: Buffer | string): string {
+    if (Buffer.isBuffer(photo)) {
+      return photo.toString('base64');
+    } else if (typeof photo === 'string') {
+      return photo;
+    }
+    throw new InternalServerErrorException('Formato de imagen no válido. La imagen debe ser un Buffer o una cadena en base64.');
+  }
+
   async createProduct(createProductDto: CreateProductDto): Promise<Product> {
     try {
-      const user = await this.userModel.findOne({ email: createProductDto.email });
-      if (!user) {
-        throw new NotFoundException('Usuario no encontrado.');
-      }
-      let base64Image: string;
-      if (Buffer.isBuffer(createProductDto.photo)) {
-        base64Image = createProductDto.photo.toString('base64');
-      } else if (typeof createProductDto.photo === 'string') {
-        base64Image = createProductDto.photo;
-      } else {
-        throw new InternalServerErrorException(
-          'Formato de imagen no válido. La imagen debe ser un Buffer o una cadena en base64.'
-        );
-      }
+      const user = await this.validateUser(createProductDto.email);
+      const base64Image = this.convertPhotoToBase64(createProductDto.photo);
+
       const product = new this.productModel({
         name: createProductDto.name,
+        price: createProductDto.price,
+        description: createProductDto.description,
         photo: base64Image,
         user: user._id,
         category: createProductDto.category, 
@@ -59,6 +67,8 @@ export class ProductService {
           $project: {
             name: 1,
             photo: 1,
+            price: 1,
+            description: 1,
             createdAt: 1,
             updatedAt: 1,
             category: 1, 
@@ -71,6 +81,8 @@ export class ProductService {
       const productData = products.map((product) => ({
         name: product.name,
         photo: `data:image/jpeg;base64,${product.photo}`,
+        price: product.price,
+        description: product.description,
         createdAt: product.createdAt,
         updatedAt: product.updatedAt,
         category: product.category, 

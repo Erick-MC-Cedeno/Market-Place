@@ -17,6 +17,7 @@ import EmailVerificationComponent from './components/settings/verify'
 import { LanguageProvider } from './hooks/LanguageContext';
 import './i18n'; 
 import CreateProduct from './components/createProduct';
+import './index.css'
 
 // APLICACION CLIENTE
 export default function App() {

@@ -6,7 +6,16 @@ export class CreateProductDto {
   name: string;
 
   @IsOptional()
+  @IsNotEmpty()
   photo: Buffer;
+
+ @IsString()
+  @IsNotEmpty()
+  price: number;
+
+  @IsString()
+  @IsNotEmpty()
+  description: string;
 
   @IsOptional()
   @IsString()

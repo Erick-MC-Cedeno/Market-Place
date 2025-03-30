@@ -11,6 +11,8 @@ function CreateProduct() {
     const [photo, setPhoto] = useState(null); 
     const [preview, setPreview] = useState(''); 
     const [category, setCategory] = useState(''); 
+    const [price, setPrice] = useState(''); 
+    const [description, setDescription] = useState('');
     const history = useHistory();
 
     const handlePhotoChange = (e) => {
@@ -18,9 +20,7 @@ function CreateProduct() {
         if (file) {
             setPhoto(file); 
             const reader = new FileReader();
-            reader.onloadend = () => {
-                setPreview(reader.result); 
-            };
+            reader.onloadend = () => setPreview(reader.result);
             reader.readAsDataURL(file); 
         }
     };
@@ -28,7 +28,7 @@ function CreateProduct() {
     const handleSubmit = async (e) => {
         e.preventDefault(); 
 
-        if (!name || !photo || !auth?.email || !category) {
+        if (!name || !photo ||  !price || !description || !auth?.email || !category) {
             alert('Por favor, completa todos los campos.');
             return;
         }
@@ -37,12 +37,16 @@ function CreateProduct() {
         formData.append('name', name);
         formData.append('email', auth.email);
         formData.append('photo', photo); 
+        formData.append('price', price); 
+        formData.append('description', description);
         formData.append('category', category); 
 
         await createProduct(formData);
 
         setName('');
         setPhoto(null);
+        setPrice('');
+        setDescription('');
         setPreview('');
         setCategory(''); 
     };
@@ -92,6 +96,27 @@ function CreateProduct() {
                     </Select>
                 </FormControl>
 
+                <TextField
+                    fullWidth
+                    label="Precio del Producto"
+                    type="number"
+                    value={price}
+                    onChange={(e) => setPrice(e.target.value)}
+                    sx={{ mb: 3 }}
+                    required
+                />
+
+                <TextField
+                    fullWidth
+                    label="Descripción del Producto"
+                    multiline
+                    rows={4}
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    sx={{ mb: 3 }}
+                    required
+                />
+
                 <Box sx={{ mb: 3 }}>
                     <input
                         type="file"
@@ -122,7 +147,7 @@ function CreateProduct() {
                             <img
                                 src={preview}
                                 alt="Vista previa de la foto"
-                                style={{ maxWidth: '100%', borderRadius: 4 }}
+                                style={{ width: '100%', height: '220px', objectFit: 'contain', borderRadius: 4 }}
                             />
                         </Box>
                     )}

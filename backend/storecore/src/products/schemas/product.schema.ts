@@ -12,6 +12,13 @@ export class Product {
   @Prop({ type: Buffer, required: false })
   photo: Buffer;
 
+  @Prop({ required: true })
+  price: number;
+
+  @Prop({ required: true })
+  description: string;
+
+
   @Prop({ type: Types.ObjectId, ref: 'User', required: true })
   user: Types.ObjectId | User;
 
