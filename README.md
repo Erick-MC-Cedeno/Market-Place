@@ -47,14 +47,9 @@ $ nest start
 # Register
 ![Register](frontend/src/assets/screenshots/register.png)
 
-# Create product
-![Create](frontend/src/assets/screenshots/create.png)
-
 # Settings
 ![Settings](frontend/src/assets/screenshots/settings.png)
 
 # DEMO VIDEO
-![Demo Video](frontend/src/assets/screenshots/silk.gif)
-
-
+<img src="frontend/src/assets/screenshots/silk.gif" width="600" alt="Demo Video">
 
