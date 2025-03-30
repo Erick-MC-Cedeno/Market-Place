@@ -50,13 +50,11 @@ $ nest start
 # Create product
 ![Create](frontend/src/assets/screenshots/create.png)
 
- # Home
-![Home](frontend/src/assets/screenshots/home.png)
-
 # Settings
 ![Settings](frontend/src/assets/screenshots/settings.png)
 
-
+# DEMO VIDEO
+![Demo Video](frontend/src/assets/screenshots/silk.gif)
 
 
 
