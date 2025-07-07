@@ -3,6 +3,8 @@ axios.defaults.withCredentials = true
 
 const baseApi = 'https://urban-pancake-x5wvwwxx69p2667p-4000.app.github.dev/secure/api'
 
+
+
 // Endpoints usuario
 const loginApi = `${baseApi}/user/login`
 const logoutApi = `${baseApi}/user/logout`
