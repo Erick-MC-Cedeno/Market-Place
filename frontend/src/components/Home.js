@@ -1,6 +1,6 @@
 "use client"
 
-import { useContext, useState } from "react"
+import { useContext, useState, useEffect } from "react"
 import { styled } from "@mui/material/styles"
 import {
   AppBar as MuiAppBar,
@@ -19,6 +19,8 @@ import {
   ListItemText,
   Divider,
   Button,
+  Snackbar,
+  Alert,
   useMediaQuery,
   useTheme,
   Grid,
@@ -37,7 +39,12 @@ import {
   Search as SearchIcon,
   ShoppingBag as ShoppingBagIcon,
   MoreVert as MoreVertIcon,
+  AddShoppingCart as AddShoppingCartIcon,
+  ShoppingCart as ShoppingCartIcon,
+  ContactMail as ContactMailIcon,
+  RemoveShoppingCart as RemoveShoppingCartIcon,
 } from "@mui/icons-material"
+import CartDrawer from "./Cart"
 import useAuth from "../hooks/useAuth"
 import { AuthContext } from "../hooks/AuthContext"
 import useProducts from "../hooks/useProducts"
@@ -301,6 +308,29 @@ function DashboardContent() {
   const [selectedCategory, setSelectedCategory] = useState("all")
   const [primaryCategory, setPrimaryCategory] = useState({ value: "all", label: "Todos" })
   const [anchorOverflow, setAnchorOverflow] = useState(null)
+  const [cartOpen, setCartOpen] = useState(false)
+  const [cartItems, setCartItems] = useState([])
+
+  // Persist cart in localStorage
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem("cartItems")
+      if (raw) {
+        const parsed = JSON.parse(raw)
+        if (Array.isArray(parsed)) setCartItems(parsed)
+      }
+    } catch (e) {
+      console.warn("Failed to load cart from localStorage", e)
+    }
+  }, [])
+
+  useEffect(() => {
+    try {
+      localStorage.setItem("cartItems", JSON.stringify(cartItems))
+    } catch (e) {
+      console.warn("Failed to save cart to localStorage", e)
+    }
+  }, [cartItems])
   const [searchKeyword, setSearchKeyword] = useState("")
   const [submittedKeyword, setSubmittedKeyword] = useState("")
   const [currentPage, setCurrentPage] = useState(1)
@@ -322,6 +352,61 @@ function DashboardContent() {
   }
 
   const handleContactClick = () => alert("¡Se ha hecho clic en Contactar!")
+
+  const handleOpenCart = () => setCartOpen(true)
+  const handleCloseCart = () => setCartOpen(false)
+
+  // Toast for add-to-cart feedback
+  const [toastOpen, setToastOpen] = useState(false)
+  const [toastMessage, setToastMessage] = useState("")
+  const [toastSeverity, setToastSeverity] = useState("success")
+
+  const showToast = (message, severity = "success") => {
+    setToastMessage(message)
+    setToastSeverity(severity)
+    setToastOpen(true)
+  }
+
+  const handleCloseToast = (event, reason) => {
+    if (reason === 'clickaway') return
+    setToastOpen(false)
+  }
+
+  const handleAddToCart = (product) => {
+    const id = product._id || product.id
+    setCartItems((prev) => {
+      const exist = id ? prev.find((p) => (p._id || p.id) === id) : prev.find((p) => p.name === product.name)
+      if (exist) {
+        return prev.map((p) => ((p._id || p.id) === (exist._id || exist.id) || p.name === exist.name ? { ...p, qty: (p.qty || 1) + 1 } : p))
+      }
+      return [...prev, { ...product, qty: 1 }]
+    })
+    // show success toast instead of opening the cart drawer
+    showToast("Se ha agregado con éxito", "success")
+  }
+
+  const handleDecrementFromProduct = (product) => {
+    const id = product._id || product.id
+    const exist = id ? cartItems.find((p) => (p._id || p.id) === id) : cartItems.find((p) => p.name === product.name)
+    if (!exist) return
+    if ((exist.qty || 1) > 1) {
+      handleUpdateQty(exist, (exist.qty || 1) - 1)
+      showToast("Se ha quitado 1 unidad del carrito", "warning")
+    } else {
+      handleRemoveFromCart(exist)
+      showToast("Se ha quitado del carrito", "warning")
+    }
+  }
+
+  const handleRemoveFromCart = (item) => {
+    const id = item._id || item.id
+    setCartItems((prev) => prev.filter((p) => id ? (p._id || p.id) !== id : p.name !== item.name))
+  }
+
+  const handleUpdateQty = (item, qty) => {
+    const id = item._id || item.id
+    setCartItems((prev) => prev.map((p) => (id ? ((p._id || p.id) === id ? { ...p, qty } : p) : (p.name === item.name ? { ...p, qty } : p))))
+  }
 
   const getAvatarColor = (name) => {
     const colors = ["#FF6B6B", "#4ECDC4", "#45B7D1", "#96CEB4", "#FFEAA7", "#DDA0DD"]
@@ -366,9 +451,10 @@ function DashboardContent() {
   ]
 
   const navItems = [
-    { href: "/create", label: "Vender productos" },
-    { href: "/contactanos", label: "Contáctanos" },
-    { href: "/ubicaciones", label: "Ubicaciones" },
+    { href: "/create", label: "Vender productos", icon: <AddShoppingCartIcon sx={{ mr: 1 }} /> },
+    { href: "/contactanos", label: "Contáctanos", icon: <ContactMailIcon sx={{ mr: 1 }} /> },
+    // Replace the text 'Ubicaciones' with a cart icon; no functionality for now
+    { href: "/ubicaciones", label: "", icon: <ShoppingCartIcon sx={{ fontSize: 28 }} />, isCart: true },
   ]
 
   const categories = [
@@ -382,44 +468,53 @@ function DashboardContent() {
 
   const renderNavLinks = () => (
     <Box sx={{ flexGrow: 1, display: "flex", justifyContent: "center", gap: 1 }}>
-      {navItems.map(({ href, label }) => (
-        <Link
-          key={label}
-          href={href}
-          sx={{
-            textDecoration: "none",
-            color: "white",
-            px: 3,
-            py: 1.5,
-            borderRadius: 3,
-            transition: "all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
-            position: "relative",
-            overflow: "hidden",
-            "&::before": {
-              content: '""',
-              position: "absolute",
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              background: "rgba(255, 255, 255, 0.1)",
+      {navItems.map(({ href, label, icon, isCart }) => (
+        isCart ? (
+          <Box key={href} sx={{ display: 'flex', alignItems: 'center', px: 1 }}>
+            <IconButton sx={{ color: 'white' }} aria-label="Carrito" onClick={handleOpenCart}>
+              {icon}
+            </IconButton>
+          </Box>
+        ) : (
+          <Link
+            key={label}
+            href={href}
+            sx={{
+              textDecoration: "none",
+              color: "white",
+              px: 3,
+              py: 1.5,
               borderRadius: 3,
-              transform: "scaleX(0)",
-              transformOrigin: "left",
-              transition: "transform 0.3s ease",
-            },
-            "&:hover": {
-              transform: "translateY(-2px)",
+              transition: "all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+              position: "relative",
+              overflow: "hidden",
               "&::before": {
-                transform: "scaleX(1)",
+                content: '""',
+                position: "absolute",
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                background: "rgba(255, 255, 255, 0.1)",
+                borderRadius: 3,
+                transform: "scaleX(0)",
+                transformOrigin: "left",
+                transition: "transform 0.3s ease",
               },
-            },
-          }}
-        >
-          <Typography variant="body1" sx={{ fontWeight: 600, fontSize: "0.95rem", position: "relative", zIndex: 1 }}>
-            {label}
-          </Typography>
-        </Link>
+              "&:hover": {
+                transform: "translateY(-2px)",
+                "&::before": {
+                  transform: "scaleX(1)",
+                },
+              },
+            }}
+          >
+            <Typography variant="body1" sx={{ fontWeight: 600, fontSize: "0.95rem", position: "relative", zIndex: 1, display: 'flex', alignItems: 'center' }}>
+              {icon}
+              {label}
+            </Typography>
+          </Link>
+        )
       ))}
     </Box>
   )
@@ -585,6 +680,15 @@ function DashboardContent() {
         </Toolbar>
       </AppBar>
 
+      {/* Carrito Drawer */}
+      <CartDrawer open={cartOpen} onClose={handleCloseCart} items={cartItems} onRemove={handleRemoveFromCart} onUpdateQty={handleUpdateQty} />
+
+      <Snackbar open={toastOpen} autoHideDuration={3000} onClose={handleCloseToast} anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}>
+        <Alert onClose={handleCloseToast} severity={toastSeverity} sx={{ width: '100%' }}>
+          {toastMessage}
+        </Alert>
+      </Snackbar>
+
       {isMobile && (
         <Drawer
           anchor="left"
@@ -694,7 +798,7 @@ function DashboardContent() {
         animation: "fadeInUp 0.8s ease-out 0.3s both",
       }}>
             <SearchField
-              label="Buscar productos..."
+              placeholder="Buscar productos..."
               variant="outlined"
               value={searchKeyword}
               onChange={handleKeywordChange}
@@ -915,7 +1019,29 @@ function DashboardContent() {
                           gap: 2,
                         }}
                       >
-                        <AnimatedChip label={`$${product.price}`} />
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                          <AnimatedChip label={`$${product.price}`} />
+                          {/* show remove button if product is in cart, else show add button */}
+                          {(() => {
+                            const id = product._id || product.id
+                            const cartItem = id ? cartItems.find((p) => (p._id || p.id) === id) : cartItems.find((p) => p.name === product.name)
+                            if (cartItem) {
+                              return (
+                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                  <Typography sx={{ fontWeight: 700 }}>{cartItem.qty || 1}</Typography>
+                                  <IconButton color="warning" onClick={() => handleDecrementFromProduct(product)} sx={{ bgcolor: 'rgba(0,0,0,0.04)', '&:hover': { bgcolor: 'rgba(0,0,0,0.08)' } }} aria-label="Quitar del carrito">
+                                    <RemoveShoppingCartIcon sx={{ color: '#FBC02D' }} />
+                                  </IconButton>
+                                </Box>
+                              )
+                            }
+                            return (
+                              <IconButton color="primary" onClick={() => handleAddToCart(product)} sx={{ bgcolor: 'rgba(0,0,0,0.04)', '&:hover': { bgcolor: 'rgba(0,0,0,0.08)' } }} aria-label="Agregar al carrito">
+                                <AddShoppingCartIcon sx={{ color: '#2E7D32' }} />
+                              </IconButton>
+                            )
+                          })()}
+                        </Box>
                         <ModernButton
                           variant="contained"
                           size="small"
