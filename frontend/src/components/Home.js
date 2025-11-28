@@ -28,8 +28,6 @@ import {
   CardContent,
   CardMedia,
   Chip,
-  Container,
-  Paper,
   Fade,
 } from "@mui/material"
 import { useHistory } from "react-router-dom"
@@ -39,6 +37,7 @@ import {
   Settings as SettingsIcon,
   Search as SearchIcon,
   ShoppingBag as ShoppingBagIcon,
+  MoreVert as MoreVertIcon,
 } from "@mui/icons-material"
 import useAuth from "../hooks/useAuth"
 import { AuthContext } from "../hooks/AuthContext"
@@ -301,6 +300,8 @@ function DashboardContent() {
   const isMobile = useMediaQuery(theme.breakpoints.down("md"))
   const { products, loading, error } = useProducts()
   const [selectedCategory, setSelectedCategory] = useState("all")
+  const [primaryCategory, setPrimaryCategory] = useState({ value: "all", label: "Todos" })
+  const [anchorOverflow, setAnchorOverflow] = useState(null)
   const [searchKeyword, setSearchKeyword] = useState("")
   const [submittedKeyword, setSubmittedKeyword] = useState("")
   const [currentPage, setCurrentPage] = useState(1)
@@ -376,6 +377,8 @@ function DashboardContent() {
     { value: "electronics", label: "Electrónicos", icon: "📱" },
     { value: "clothes", label: "Ropa", icon: "👕" },
     { value: "vehicles", label: "Vehículos", icon: "🚗" },
+    { value: "medicina", label: "Medicina", icon: "💊" },
+    { value: "comida", label: "Comida", icon: "🍲" },
   ]
 
   const renderNavLinks = () => (
@@ -737,25 +740,76 @@ function DashboardContent() {
         >
           Categorías
         </Typography>
-        <Box sx={{ display: "flex", flexWrap: "wrap", gap: 3, justifyContent: "center" }}>
-          {categories.map(({ value, label, icon }, index) => (
-            <Box
-              key={value}
-              sx={{
-                animation: `fadeInUp 0.6s ease-out ${0.8 + index * 0.1}s both`,
-              }}
-            >
-              <CategoryButton
-                selected={selectedCategory === value}
-                onClick={() => handleCategoryChange(value)}
-              >
-                <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
-                  <Typography sx={{ fontSize: "1.2rem" }}>{icon}</Typography>
-                  {label}
-                </Box>
-              </CategoryButton>
-            </Box>
-          ))}
+        <Box sx={{ display: "flex", flexWrap: "nowrap", gap: 2, justifyContent: "center", alignItems: "center" }}>
+          {/* Build visible categories: primary (which starts as Todos) + two more (excluding primary) */}
+          {(() => {
+            // If nothing is selected (selectedCategory === 'all'), show Todos as primary
+            const currentPrimary = selectedCategory === 'all' ? { value: 'all', label: 'Todos' } : primaryCategory
+            const visibleRest = categories.filter(c => c.value !== currentPrimary.value && c.value !== 'all').slice(0, 2)
+            const overflow = categories.filter(c => c.value !== currentPrimary.value && c.value !== 'all' && !visibleRest.some(v => v.value === c.value))
+            const items = [ currentPrimary, ...visibleRest ]
+            return (
+              <>
+                {items.map(({ value, label }, index) => (
+                  <Box key={value} sx={{ animation: `fadeInUp 0.6s ease-out ${0.8 + index * 0.1}s both` }}>
+                    <CategoryButton
+                      selected={selectedCategory === value}
+                      onClick={() => handleCategoryChange(value)}
+                    >
+                      <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+                        <Typography sx={{ fontSize: "1.2rem" }}>{index === 0 ? '🏪' : ''}</Typography>
+                        {label}
+                      </Box>
+                    </CategoryButton>
+                  </Box>
+                ))}
+
+                {/* Three-dot overflow menu placed at the end */}
+                {overflow.length > 0 && (
+                  <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                    <IconButton
+                      aria-label="Más categorías"
+                      onClick={(e) => setAnchorOverflow(e.currentTarget)}
+                      sx={{ ml: 1, color: '#2E7D32' }}
+                    >
+                      <MoreVertIcon />
+                    </IconButton>
+                    <Menu
+                      anchorEl={anchorOverflow}
+                      open={Boolean(anchorOverflow)}
+                      onClose={() => setAnchorOverflow(null)}
+                      PaperProps={{ sx: { borderRadius: 2 } }}
+                    >
+                      {/* Add an option to reset to Todos */}
+                      <MenuItem
+                        key="reset-all"
+                        onClick={() => {
+                          setPrimaryCategory({ value: 'all', label: 'Todos' })
+                          setSelectedCategory('all')
+                          setAnchorOverflow(null)
+                        }}
+                      >
+                        <Typography sx={{ fontWeight: 700 }}>Mostrar Todos</Typography>
+                      </MenuItem>
+                      <Divider />
+                      {overflow.map((cat) => (
+                        <MenuItem
+                          key={cat.value}
+                          onClick={() => {
+                            setPrimaryCategory({ value: cat.value, label: cat.label })
+                            setSelectedCategory(cat.value)
+                            setAnchorOverflow(null)
+                          }}
+                        >
+                          <Typography sx={{ fontWeight: 700 }}>{cat.label}</Typography>
+                        </MenuItem>
+                      ))}
+                    </Menu>
+                  </Box>
+                )}
+              </>
+            )
+          })()}
         </Box>
       </Box>
 

@@ -35,7 +35,6 @@ import {
   AttachMoney,
   Description,
   ArrowBack,
-  CheckCircle,
   Inventory,
 } from "@mui/icons-material"
 import { useHistory } from "react-router-dom"
