@@ -62,12 +62,66 @@ function CreateProduct() {
   const handlePhotoChange = (e) => {
     const file = e.target.files[0]
     if (file) {
-      setPhoto(file)
-      const reader = new FileReader()
-      reader.onloadend = () => setPreview(reader.result)
-      reader.readAsDataURL(file)
+      // Resize + crop client-side so all uploaded images have the same dimensions
+      ;(async () => {
+        try {
+          const resized = await resizeAndCropImage(file, 1000)
+          setPhoto(resized)
+          const reader = new FileReader()
+          reader.onloadend = () => setPreview(reader.result)
+          reader.readAsDataURL(resized)
+        } catch (err) {
+          console.error("Error resizing image:", err)
+          setPhoto(file)
+          const reader = new FileReader()
+          reader.onloadend = () => setPreview(reader.result)
+          reader.readAsDataURL(file)
+        }
+      })()
     }
   }
+
+  // Resize and crop image to a square of `size` x `size` pixels (center-crop)
+  const resizeAndCropImage = (file, size = 1000) =>
+    new Promise((resolve, reject) => {
+      const img = new Image()
+      img.onload = () => {
+        try {
+          const canvas = document.createElement("canvas")
+          canvas.width = size
+          canvas.height = size
+          const ctx = canvas.getContext("2d")
+
+          // calculate cover scaling (crop to fill)
+          const ratio = Math.max(size / img.width, size / img.height)
+          const w = img.width * ratio
+          const h = img.height * ratio
+          const dx = (size - w) / 2
+          const dy = (size - h) / 2
+
+          ctx.drawImage(img, dx, dy, w, h)
+
+          canvas.toBlob(
+            (blob) => {
+              if (!blob) return reject(new Error("Canvas is empty"))
+              const resizedFile = new File([blob], file.name, { type: file.type })
+              resolve(resizedFile)
+            },
+            file.type || "image/jpeg",
+            0.9
+          )
+        } catch (err) {
+          reject(err)
+        }
+      }
+      img.onerror = (e) => reject(e)
+      const reader = new FileReader()
+      reader.onload = (ev) => {
+        img.src = ev.target.result
+      }
+      reader.onerror = (e) => reject(e)
+      reader.readAsDataURL(file)
+    })
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -472,7 +526,8 @@ function CreateProduct() {
                       alt="Vista previa de la foto"
                       sx={{
                         height: 250,
-                        objectFit: "contain",
+                        width: "100%",
+                        objectFit: "cover",
                         bgcolor: "grey.50",
                       }}
                     />

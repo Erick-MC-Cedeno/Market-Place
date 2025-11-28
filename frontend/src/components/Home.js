@@ -26,7 +26,6 @@ import {
   InputAdornment,
   Card,
   CardContent,
-  CardMedia,
   Chip,
   Fade,
 } from "@mui/material"
@@ -859,15 +858,14 @@ function DashboardContent() {
                 <Fade in={true} timeout={400 + index * 100}>
                   <StyledCard>
                     {product.photo && (
-                      <CardMedia
-                        component="img"
-                        height="220"
-                        image={product.photo}
-                        alt={product.name}
+                      <Box
                         sx={{
-                          objectFit: "cover",
-                          backgroundColor: "rgba(255,255,255,0.6)",
-                          p: 2,
+                          height: 220,
+                          width: "100%",
+                          backgroundImage: `url(${product.photo})`,
+                          backgroundSize: "cover",
+                          backgroundPosition: "center",
+                          backgroundRepeat: "no-repeat",
                           transition: "transform 0.2s ease",
                           "&:hover": {
                             transform: "scale(1.03)",
