@@ -91,21 +91,12 @@ export default function Login() {
             sx={{
               p: { xs: 3, sm: 5 },
               borderRadius: 4,
-              background: "rgba(255, 255, 255, 0.95)",
-              backdropFilter: "blur(20px)",
-              border: "1px solid rgba(76, 175, 80, 0.2)",
-              boxShadow: "0 20px 60px rgba(76, 175, 80, 0.15)",
+              background: "transparent",
+              backdropFilter: "none",
+              border: "none",
+              boxShadow: "none",
               position: "relative",
-              overflow: "hidden",
-              "&::before": {
-                content: '""',
-                position: "absolute",
-                top: 0,
-                left: 0,
-                right: 0,
-                height: 4,
-                background: "linear-gradient(90deg, #4CAF50 0%, #66BB6A 50%, #4CAF50 100%)",
-              },
+              overflow: "visible",
             }}
           >
             {/* Logo y Header */}
