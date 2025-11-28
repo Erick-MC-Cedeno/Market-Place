@@ -62,15 +62,15 @@ function SearchProducts() {
       ) : (
         <Grid container spacing={4}>
           {filteredProducts.map((product, index) => (
-            <Grid item xs={12} sm={6} md={3} key={index}>
+            <Grid item xs={12} sm={6} md={6} key={index}>
               <Box
                 sx={{
-                  p: 4,
+                  p: 3,
                   border: '1px solid #ddd',
                   borderRadius: 2,
                   boxSizing: 'border-box',
                   overflow: 'hidden',
-                  height: 450,
+                  height: 360,
                   display: 'flex',
                   flexDirection: 'column'
                 }}

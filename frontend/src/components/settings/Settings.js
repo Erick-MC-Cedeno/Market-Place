@@ -10,6 +10,7 @@ import {
     Paper, 
     List, 
     ListItem, 
+    ListItemButton,
     ListItemIcon, 
     ListItemText, 
     Typography, 
@@ -64,23 +65,51 @@ function Settings() {
                 <Box sx={{ width: isMobile ? '17%' : '20%', bgcolor: theme.palette.grey[200] }}>
                     <List>
                         {sections.map(({ id, label, icon }) => (
-                            <ListItem
-                                button
-                                key={id}
-                                onClick={() => setSelectedSection(id)}
-                                selected={selectedSection === id}
+                            <ListItem key={id} disablePadding>
+                                <ListItemButton
+                                    onClick={() => setSelectedSection(id)}
+                                    selected={selectedSection === id}
+                                    sx={{
+                                        width: '100%',
+                                        bgcolor: selectedSection === id ? '#A5D6A7' : 'transparent', 
+                                        color: selectedSection === id ? '#FFFFFF' : 'inherit', 
+                                        '&:hover': {
+                                            bgcolor: '#4CAF50',
+                                            color: '#FFFFFF', 
+                                        },
+                                    }}
+                                >
+                                    <ListItemIcon sx={{ fontSize: isMobile ? 20 : 24, color: selectedSection === id ? '#FFFFFF' : 'inherit' }}>{icon}</ListItemIcon>
+                                    <ListItemText
+                                        primary={t(label)} 
+                                        sx={{
+                                            display: isMobile ? 'none' : 'block',
+                                            overflow: 'hidden',
+                                            textOverflow: 'ellipsis',
+                                            whiteSpace: 'nowrap',
+                                            typography: 'body2',
+                                            fontSize: isMobile ? '0.875rem' : '1rem',
+                                        }}
+                                    />
+                                </ListItemButton>
+                            </ListItem>
+                        ))}
+                        <ListItem disablePadding sx={{ marginTop: 'auto' }}>
+                            <ListItemButton
+                                component={Link}
+                                to="/"
                                 sx={{
-                                    bgcolor: selectedSection === id ? '#A5D6A7' : 'transparent', 
-                                    color: selectedSection === id ? '#FFFFFF' : 'inherit', 
+                                    width: '100%',
+                                    color: 'inherit',
                                     '&:hover': {
-                                        bgcolor: '#4CAF50',
+                                        bgcolor: '#4CAF50', 
                                         color: '#FFFFFF', 
                                     },
                                 }}
                             >
-                                <ListItemIcon sx={{ fontSize: isMobile ? 20 : 24, color: selectedSection === id ? '#FFFFFF' : 'inherit' }}>{icon}</ListItemIcon>
+                                <ListItemIcon sx={{ fontSize: isMobile ? 20 : 24, color: 'inherit' }}><ArrowBackIcon /></ListItemIcon>
                                 <ListItemText
-                                    primary={t(label)} 
+                                    primary={t('go_back')} 
                                     sx={{
                                         display: isMobile ? 'none' : 'block',
                                         overflow: 'hidden',
@@ -90,33 +119,7 @@ function Settings() {
                                         fontSize: isMobile ? '0.875rem' : '1rem',
                                     }}
                                 />
-                            </ListItem>
-                        ))}
-                        <ListItem
-                            button
-                            component={Link}
-                            to="/"
-                            sx={{
-                                marginTop: 'auto', 
-                                color: 'inherit',
-                                '&:hover': {
-                                    bgcolor: '#4CAF50', 
-                                    color: '#FFFFFF', 
-                                },
-                            }}
-                        >
-                            <ListItemIcon sx={{ fontSize: isMobile ? 20 : 24, color: 'inherit' }}><ArrowBackIcon /></ListItemIcon>
-                            <ListItemText
-                                primary={t('go_back')} 
-                                sx={{
-                                    display: isMobile ? 'none' : 'block',
-                                    overflow: 'hidden',
-                                    textOverflow: 'ellipsis',
-                                    whiteSpace: 'nowrap',
-                                    typography: 'body2',
-                                    fontSize: isMobile ? '0.875rem' : '1rem',
-                                }}
-                            />
+                            </ListItemButton>
                         </ListItem>
                     </List>
                 </Box>

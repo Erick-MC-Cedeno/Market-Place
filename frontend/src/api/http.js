@@ -1,7 +1,7 @@
 import axios from 'axios'
 axios.defaults.withCredentials = true
 
-const baseApi = 'https://urban-pancake-x5wvwwxx69p2667p-4000.app.github.dev/secure/api'
+const baseApi = 'http://localhost:4000/secure/api'
 
 
 

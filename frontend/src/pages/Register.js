@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useRef, useEffect } from "react"
 import {
   Typography,
   Box,
@@ -32,6 +32,7 @@ import useAuth from "../hooks/useAuth"
 
 export default function Register() {
   const { registerUser, error } = useAuth()
+  const isMounted = useRef(true)
   const [openSnackbar, setOpenSnackbar] = useState(false)
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
@@ -53,15 +54,21 @@ export default function Register() {
       await new Promise((resolve) => setTimeout(resolve, 2000))
       await registerUser(data)
     } catch (e) {
-      setOpenSnackbar(true)
+      if (isMounted.current) setOpenSnackbar(true)
     } finally {
-      setLoading(false)
+      if (isMounted.current) setLoading(false)
     }
   }
 
   const handleCloseSnackbar = () => {
     setOpenSnackbar(false)
   }
+
+  useEffect(() => {
+    return () => {
+      isMounted.current = false
+    }
+  }, [])
 
   const passwordsMatch = password === confirmPassword || confirmPassword === ""
 
@@ -546,7 +553,7 @@ export default function Register() {
       </Container>
 
       {/* Estilos CSS para animaciones */}
-      <style jsx global>{`
+      <style>{`
         @keyframes pulse {
           0%,
           100% {

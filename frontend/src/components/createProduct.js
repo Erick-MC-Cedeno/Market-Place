@@ -15,10 +15,7 @@ import {
   Card,
   CardMedia,
   Fade,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
+  
   Grid,
   Chip,
   Avatar,
@@ -27,7 +24,10 @@ import {
   Step,
   StepLabel,
   Container,
+  Snackbar,
+  Alert,
 } from "@mui/material"
+import Navbar from "./Navbar"
 import {
   PhotoCamera,
   ShoppingCart,
@@ -53,7 +53,10 @@ function CreateProduct() {
   const [category, setCategory] = useState("")
   const [price, setPrice] = useState("")
   const [description, setDescription] = useState("")
-  const [showSuccessDialog, setShowSuccessDialog] = useState(false)
+  
+  const [toastOpen, setToastOpen] = useState(false)
+  const [toastMessage, setToastMessage] = useState("")
+  const [toastSeverity, setToastSeverity] = useState("success")
   const [activeStep, setActiveStep] = useState(0)
   const history = useHistory()
 
@@ -70,7 +73,9 @@ function CreateProduct() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     if (!name || !photo || !price || !description || !auth?.email || !category) {
-      alert("Por favor, completa todos los campos.")
+      setToastMessage("Por favor, completa todos los campos.")
+      setToastSeverity("error")
+      setToastOpen(true)
       return
     }
     const formData = new FormData()
@@ -83,21 +88,56 @@ function CreateProduct() {
 
     await createProduct(formData)
 
+    setToastMessage("Producto creado correctamente")
+    setToastSeverity("success")
+    setToastOpen(true)
     setName("")
     setPhoto(null)
     setPrice("")
     setDescription("")
     setPreview("")
     setCategory("")
-    setShowSuccessDialog(true)
+  }
+
+  const validateStep = (step) => {
+    switch (step) {
+      case 0:
+        if (!name) {
+          setToastMessage("Por favor, completa el nombre del producto.")
+          setToastSeverity("error")
+          setToastOpen(true)
+          return false
+        }
+        return true
+      case 1:
+        if (!category || !price || !description) {
+          setToastMessage("Por favor, completa la categoría, precio y descripción.")
+          setToastSeverity("error")
+          setToastOpen(true)
+          return false
+        }
+        return true
+      case 2:
+        if (!photo) {
+          setToastMessage("Por favor, sube una imagen para el producto.")
+          setToastSeverity("error")
+          setToastOpen(true)
+          return false
+        }
+        return true
+      default:
+        return true
+    }
+  }
+
+  const handleNext = () => {
+    if (validateStep(activeStep)) {
+      setActiveStep(Math.min(steps.length - 1, activeStep + 1))
+    }
   }
 
   const handleBack = () => {
     history.push("/")
-  }
-
-  const handleCloseSuccessDialog = () => {
-    setShowSuccessDialog(false)
   }
 
   const getCategoryIcon = (cat) => {
@@ -369,11 +409,11 @@ function CreateProduct() {
                 </Box>
                 <input
                   type="file"
+                  name="photo"
                   accept="image/*"
                   onChange={handlePhotoChange}
                   style={{ display: "none" }}
                   id="photo-upload"
-                  required
                 />
                 <label htmlFor="photo-upload">
                   <Paper
@@ -476,6 +516,7 @@ function CreateProduct() {
         py: 4,
       }}
     >
+      <Navbar />
       <Container maxWidth="lg">
         {/* Header */}
         <Paper
@@ -550,7 +591,7 @@ function CreateProduct() {
         </Paper>
 
         {/* Form Content */}
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} noValidate>
           <Paper elevation={2} sx={{ p: 4, borderRadius: 3, mb: 4 }}>
             {getStepContent(activeStep)}
           </Paper>
@@ -559,6 +600,7 @@ function CreateProduct() {
           <Paper elevation={2} sx={{ p: 3, borderRadius: 3 }}>
             <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <Button
+                type="button"
                 variant="outlined"
                 onClick={() => setActiveStep(Math.max(0, activeStep - 1))}
                 disabled={activeStep === 0}
@@ -578,8 +620,9 @@ function CreateProduct() {
               <Box sx={{ display: "flex", gap: 2 }}>
                 {activeStep < steps.length - 1 ? (
                   <Button
+                    type="button"
                     variant="contained"
-                    onClick={() => setActiveStep(Math.min(steps.length - 1, activeStep + 1))}
+                    onClick={handleNext}
                     sx={{
                       bgcolor: "#4CAF50",
                       fontWeight: 600,
@@ -648,49 +691,31 @@ function CreateProduct() {
         </form>
       </Container>
 
-      {/* Success Dialog */}
-      <Dialog
-        open={showSuccessDialog}
-        onClose={handleCloseSuccessDialog}
-        PaperProps={{
-          sx: {
-            borderRadius: 4,
-            minWidth: 400,
-            textAlign: "center",
-          },
-        }}
+      {/* Success dialog removed; toast now provides success feedback */}
+
+      {/* Side Toast (Snackbar) */}
+      <Snackbar
+        open={toastOpen}
+        autoHideDuration={6000}
+        onClose={() => setToastOpen(false)}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
       >
-        <DialogTitle sx={{ pt: 4 }}>
-          <CheckCircle sx={{ fontSize: 64, color: "#4CAF50", mb: 2 }} />
-          <Typography variant="h4" sx={{ fontWeight: 700, color: "#4CAF50" }}>
-            ¡Producto Creado!
-          </Typography>
-        </DialogTitle>
-        <DialogContent>
-          <Typography variant="body1" sx={{ color: "text.secondary", fontSize: "1.1rem" }}>
-            Tu producto ha sido agregado exitosamente al inventario
-          </Typography>
-        </DialogContent>
-        <DialogActions sx={{ justifyContent: "center", pb: 4 }}>
-          <Button
-            onClick={handleCloseSuccessDialog}
-            variant="contained"
-            size="large"
-            sx={{
-              bgcolor: "#4CAF50",
-              fontWeight: 600,
-              borderRadius: 3,
-              px: 6,
-              py: 1.5,
-              "&:hover": {
-                bgcolor: "#45a049",
-              },
-            }}
-          >
-            Continuar
-          </Button>
-        </DialogActions>
-      </Dialog>
+        <Alert
+          onClose={() => setToastOpen(false)}
+          severity={toastSeverity}
+          variant="filled"
+          sx={{
+            bgcolor: toastSeverity === "success" ? "#4CAF50" : undefined,
+            color: "white",
+            boxShadow: "0 8px 25px rgba(76,175,80,0.2)",
+            borderRadius: 2,
+            alignItems: "center",
+            minWidth: 240,
+          }}
+        >
+          {toastMessage}
+        </Alert>
+      </Snackbar>
     </Box>
   )
 }

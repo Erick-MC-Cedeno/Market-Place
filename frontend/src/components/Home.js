@@ -49,12 +49,23 @@ const drawerWidth = 280
 const AppBar = styled(MuiAppBar)(({ theme, open }) => ({
   zIndex: theme.zIndex.drawer + 1,
   background: "linear-gradient(135deg, #2E7D32 0%, #4CAF50 50%, #66BB6A 100%)",
-  boxShadow: "0 4px 20px rgba(76, 175, 80, 0.3)",
-  backdropFilter: "blur(10px)",
-  transition: theme.transitions.create(["width", "margin"], {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen,
+  boxShadow: "0 8px 32px rgba(76, 175, 80, 0.4)",
+  backdropFilter: "blur(20px)",
+  border: "1px solid rgba(255, 255, 255, 0.1)",
+  transition: theme.transitions.create(["width", "margin", "box-shadow"], {
+    easing: theme.transitions.easing.easeInOut,
+    duration: theme.transitions.duration.standard,
   }),
+  "&::before": {
+    content: '""',
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    background: "linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%)",
+    zIndex: -1,
+  },
   ...(open && {
     marginLeft: drawerWidth,
     width: `calc(100% - ${drawerWidth}px)`,
@@ -69,76 +80,214 @@ const StyledCard = styled(Card)(({ theme }) => ({
   height: "100%",
   display: "flex",
   flexDirection: "column",
-  borderRadius: 16,
+  borderRadius: 20,
   overflow: "hidden",
-  transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-  border: "1px solid rgba(0, 0, 0, 0.08)",
-  boxShadow: "0 2px 12px rgba(0, 0, 0, 0.08)",
+  transition: "all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+  border: "1px solid rgba(76, 175, 80, 0.1)",
+  background: "linear-gradient(145deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.9) 100%)",
+  backdropFilter: "blur(20px)",
+  boxShadow: "0 8px 32px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(76, 175, 80, 0.1)",
+  position: "relative",
+  "&::before": {
+    content: '""',
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    height: 3,
+    background: "linear-gradient(90deg, #2E7D32 0%, #4CAF50 50%, #66BB6A 100%)",
+    opacity: 0,
+    transition: "opacity 0.3s ease",
+  },
   "&:hover": {
-    transform: "translateY(-8px)",
-    boxShadow: "0 12px 40px rgba(76, 175, 80, 0.15)",
+    transform: "translateY(-12px) scale(1.02)",
+    boxShadow: "0 20px 60px rgba(76, 175, 80, 0.2), 0 8px 24px rgba(46, 125, 50, 0.15)",
     borderColor: "rgba(76, 175, 80, 0.3)",
+    "&::before": {
+      opacity: 1,
+    },
   },
 }))
 
 const CategoryButton = styled(Button)(({ theme, selected }) => ({
-  borderRadius: 25,
-  padding: "10px 24px",
-  fontWeight: 600,
-  fontSize: "0.9rem",
+  borderRadius: 30,
+  padding: "12px 28px",
+  fontWeight: 700,
+  fontSize: "0.95rem",
   textTransform: "none",
-  transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-  border: selected ? "none" : "2px solid rgba(76, 175, 80, 0.3)",
-  background: selected ? "linear-gradient(135deg, #4CAF50 0%, #66BB6A 100%)" : "rgba(255, 255, 255, 0.9)",
-  color: selected ? "white" : "#4CAF50",
-  backdropFilter: "blur(10px)",
+  transition: "all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+  border: selected ? "none" : "2px solid rgba(76, 175, 80, 0.2)",
+  background: selected 
+    ? "linear-gradient(135deg, #4CAF50 0%, #66BB6A 100%)" 
+    : "rgba(255, 255, 255, 0.95)",
+  color: selected ? "white" : "#2E7D32",
+  backdropFilter: "blur(20px)",
+  position: "relative",
+  overflow: "hidden",
+  boxShadow: selected 
+    ? "0 8px 25px rgba(76, 175, 80, 0.3)" 
+    : "0 4px 15px rgba(0, 0, 0, 0.05)",
+  "&::before": {
+    content: '""',
+    position: "absolute",
+    top: 0,
+    left: "-100%",
+    width: "100%",
+    height: "100%",
+    background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)",
+    transition: "left 0.6s ease",
+  },
   "&:hover": {
-    transform: "translateY(-2px)",
-    boxShadow: selected ? "0 8px 25px rgba(76, 175, 80, 0.4)" : "0 4px 15px rgba(76, 175, 80, 0.2)",
-    background: selected ? "linear-gradient(135deg, #388E3C 0%, #4CAF50 100%)" : "rgba(76, 175, 80, 0.1)",
+    transform: "translateY(-3px) scale(1.05)",
+    boxShadow: selected 
+      ? "0 12px 40px rgba(76, 175, 80, 0.4)" 
+      : "0 8px 25px rgba(76, 175, 80, 0.2)",
+    background: selected 
+      ? "linear-gradient(135deg, #388E3C 0%, #4CAF50 100%)" 
+      : "rgba(76, 175, 80, 0.1)",
+    "&::before": {
+      left: "100%",
+    },
   },
 }))
 
 const SearchField = styled(TextField)(({ theme }) => ({
   "& .MuiOutlinedInput-root": {
-    borderRadius: 30,
+    borderRadius: 25,
     backgroundColor: "rgba(255, 255, 255, 0.95)",
-    backdropFilter: "blur(10px)",
-    border: "2px solid transparent",
-    transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+    backdropFilter: "blur(20px)",
+    border: "2px solid rgba(76, 175, 80, 0.1)",
+    transition: "all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+    overflow: "hidden",
+    position: "relative",
+    boxShadow: "0 4px 15px rgba(0, 0, 0, 0.05)",
+    "&::before": {
+      content: '""',
+      position: "absolute",
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      background: "linear-gradient(135deg, rgba(76, 175, 80, 0.05) 0%, rgba(46, 125, 50, 0.05) 100%)",
+      opacity: 0,
+      transition: "opacity 0.3s ease",
+    },
     "&:hover": {
       backgroundColor: "white",
       borderColor: "rgba(76, 175, 80, 0.3)",
-      boxShadow: "0 4px 15px rgba(76, 175, 80, 0.1)",
+      boxShadow: "0 8px 25px rgba(76, 175, 80, 0.15)",
+      transform: "translateY(-2px)",
+      "&::before": {
+        opacity: 1,
+      },
     },
     "&.Mui-focused": {
       backgroundColor: "white",
       borderColor: "#4CAF50",
-      boxShadow: "0 4px 20px rgba(76, 175, 80, 0.2)",
+      boxShadow: "0 12px 40px rgba(76, 175, 80, 0.25)",
+      transform: "translateY(-2px)",
+      "&::before": {
+        opacity: 1,
+      },
     },
   },
   "& .MuiInputLabel-root.Mui-focused": {
     color: "#4CAF50",
+    fontWeight: 600,
   },
 }))
 
 const PaginationButton = styled(Button)(({ theme, active }) => ({
-  minWidth: 45,
-  height: 45,
-  borderRadius: 12,
-  margin: "0 4px",
-  fontWeight: 600,
-  transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-  background: active ? "linear-gradient(135deg, #4CAF50 0%, #66BB6A 100%)" : "rgba(255, 255, 255, 0.9)",
-  color: active ? "white" : "#4CAF50",
-  border: active ? "none" : "2px solid rgba(76, 175, 80, 0.3)",
+  minWidth: 48,
+  height: 48,
+  borderRadius: 16,
+  margin: "0 6px",
+  fontWeight: 700,
+  transition: "all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+  background: active 
+    ? "linear-gradient(135deg, #4CAF50 0%, #66BB6A 100%)" 
+    : "rgba(255, 255, 255, 0.95)",
+  color: active ? "white" : "#2E7D32",
+  border: active ? "none" : "2px solid rgba(76, 175, 80, 0.2)",
+  backdropFilter: "blur(20px)",
+  boxShadow: active 
+    ? "0 8px 25px rgba(76, 175, 80, 0.3)" 
+    : "0 4px 15px rgba(0, 0, 0, 0.05)",
+  position: "relative",
+  overflow: "hidden",
+  "&::before": {
+    content: '""',
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    width: "0%",
+    height: "0%",
+    background: "rgba(255, 255, 255, 0.2)",
+    borderRadius: "50%",
+    transform: "translate(-50%, -50%)",
+    transition: "all 0.4s ease",
+  },
   "&:hover": {
-    transform: "translateY(-2px)",
-    boxShadow: active ? "0 8px 25px rgba(76, 175, 80, 0.4)" : "0 4px 15px rgba(76, 175, 80, 0.2)",
+    transform: "translateY(-3px) scale(1.1)",
+    boxShadow: active 
+      ? "0 12px 40px rgba(76, 175, 80, 0.4)" 
+      : "0 8px 25px rgba(76, 175, 80, 0.2)",
+    "&::before": {
+      width: "100%",
+      height: "100%",
+    },
   },
   "&:disabled": {
-    opacity: 0.5,
+    opacity: 0.4,
     transform: "none",
+    "&:hover": {
+      transform: "none",
+    },
+  },
+}))
+
+const AnimatedChip = styled(Chip)(({ theme }) => ({
+  background: "linear-gradient(135deg, #4CAF50 0%, #66BB6A 100%)",
+  color: "white",
+  fontWeight: 700,
+  fontSize: "1.1rem",
+  height: 40,
+  borderRadius: 20,
+  transition: "all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+  boxShadow: "0 4px 15px rgba(76, 175, 80, 0.3)",
+  "&:hover": {
+    transform: "scale(1.05)",
+    boxShadow: "0 6px 20px rgba(76, 175, 80, 0.4)",
+  },
+}))
+
+const ModernButton = styled(Button)(({ theme }) => ({
+  background: "linear-gradient(135deg, #2E7D32 0%, #4CAF50 100%)",
+  borderRadius: 16,
+  fontWeight: 700,
+  textTransform: "none",
+  padding: "10px 24px",
+  transition: "all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+  boxShadow: "0 4px 15px rgba(46, 125, 50, 0.3)",
+  position: "relative",
+  overflow: "hidden",
+  "&::before": {
+    content: '""',
+    position: "absolute",
+    top: 0,
+    left: "-100%",
+    width: "100%",
+    height: "100%",
+    background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent)",
+    transition: "left 0.6s ease",
+  },
+  "&:hover": {
+    background: "linear-gradient(135deg, #1B5E20 0%, #2E7D32 100%)",
+    transform: "translateY(-2px) scale(1.02)",
+    boxShadow: "0 8px 25px rgba(46, 125, 50, 0.4)",
+    "&::before": {
+      left: "100%",
+    },
   },
 }))
 
@@ -239,16 +388,33 @@ function DashboardContent() {
             textDecoration: "none",
             color: "white",
             px: 3,
-            py: 1,
-            borderRadius: 2,
-            transition: "all 0.3s ease",
+            py: 1.5,
+            borderRadius: 3,
+            transition: "all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+            position: "relative",
+            overflow: "hidden",
+            "&::before": {
+              content: '""',
+              position: "absolute",
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              background: "rgba(255, 255, 255, 0.1)",
+              borderRadius: 3,
+              transform: "scaleX(0)",
+              transformOrigin: "left",
+              transition: "transform 0.3s ease",
+            },
             "&:hover": {
-              backgroundColor: "rgba(255, 255, 255, 0.1)",
               transform: "translateY(-2px)",
+              "&::before": {
+                transform: "scaleX(1)",
+              },
             },
           }}
         >
-          <Typography variant="body1" sx={{ fontWeight: 600, fontSize: "0.95rem" }}>
+          <Typography variant="body1" sx={{ fontWeight: 600, fontSize: "0.95rem", position: "relative", zIndex: 1 }}>
             {label}
           </Typography>
         </Link>
@@ -265,7 +431,7 @@ function DashboardContent() {
             alignItems: "center",
             justifyContent: "space-between",
             pr: "24px",
-            minHeight: 70,
+            minHeight: 75,
           }}
         >
           {isMobile && (
@@ -274,7 +440,14 @@ function DashboardContent() {
               color="inherit"
               aria-label="menu"
               onClick={() => setDrawerOpen(true)}
-              sx={{ position: "absolute", left: 16 }}
+              sx={{ 
+                position: "absolute", 
+                left: 16,
+                transition: "transform 0.3s ease",
+                "&:hover": {
+                  transform: "scale(1.1) rotate(90deg)",
+                },
+              }}
             >
               <MenuIcon />
             </IconButton>
@@ -285,22 +458,41 @@ function DashboardContent() {
               <Box
                 sx={{
                   m: 1,
-                  width: 55,
-                  height: 55,
+                  width: 60,
+                  height: 60,
                   borderRadius: "50%",
-                  background: "linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)",
+                  background: "linear-gradient(135deg, #ffffff 0%, rgba(255,255,255,0.9) 100%)",
                   border: "3px solid rgba(255, 255, 255, 0.3)",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  boxShadow: "0 4px 15px rgba(0, 0, 0, 0.2)",
-                  transition: "transform 0.3s ease",
+                  boxShadow: "0 8px 25px rgba(0, 0, 0, 0.15)",
+                  transition: "all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+                  position: "relative",
+                  overflow: "hidden",
+                  "&::before": {
+                    content: '""',
+                    position: "absolute",
+                    top: "50%",
+                    left: "50%",
+                    width: "0%",
+                    height: "0%",
+                    background: "rgba(76, 175, 80, 0.1)",
+                    borderRadius: "50%",
+                    transform: "translate(-50%, -50%)",
+                    transition: "all 0.4s ease",
+                  },
                   "&:hover": {
-                    transform: "scale(1.1) rotate(5deg)",
+                    transform: "scale(1.15) rotate(10deg)",
+                    boxShadow: "0 12px 35px rgba(76, 175, 80, 0.3)",
+                    "&::before": {
+                      width: "100%",
+                      height: "100%",
+                    },
                   },
                 }}
               >
-                <ShoppingBagIcon sx={{ color: "#4CAF50", fontSize: 28 }} />
+                <ShoppingBagIcon sx={{ color: "#4CAF50", fontSize: 32, zIndex: 1 }} />
               </Box>
               <Typography
                 variant="h5"
@@ -309,8 +501,9 @@ function DashboardContent() {
                   alignItems: "center",
                   color: "white",
                   ml: 2,
-                  fontWeight: 700,
+                  fontWeight: 800,
                   letterSpacing: "0.5px",
+                  textShadow: "0 2px 10px rgba(0,0,0,0.2)",
                 }}
               >
                 Silk Road
@@ -332,15 +525,17 @@ function DashboardContent() {
                 <Avatar
                   sx={{
                     background: `linear-gradient(135deg, ${getAvatarColor(auth.firstName)} 0%, ${getAvatarColor(auth.firstName)}CC 100%)`,
-                    width: 42,
-                    height: 42,
-                    fontSize: 18,
+                    width: 46,
+                    height: 46,
+                    fontSize: 20,
                     fontWeight: "bold",
                     color: "#fff",
                     border: "3px solid rgba(255, 255, 255, 0.3)",
-                    transition: "transform 0.3s ease",
+                    transition: "all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+                    boxShadow: "0 4px 15px rgba(0,0,0,0.2)",
                     "&:hover": {
-                      transform: "scale(1.1)",
+                      transform: "scale(1.15)",
+                      boxShadow: "0 8px 25px rgba(0,0,0,0.3)",
                     },
                   }}
                 >
@@ -355,9 +550,11 @@ function DashboardContent() {
               onClose={handleCloseUserMenu}
               PaperProps={{
                 sx: {
-                  borderRadius: 3,
-                  boxShadow: "0 8px 32px rgba(0, 0, 0, 0.12)",
-                  border: "1px solid rgba(0, 0, 0, 0.08)",
+                  borderRadius: 4,
+                  background: "linear-gradient(145deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.9) 100%)",
+                  backdropFilter: "blur(20px)",
+                  boxShadow: "0 12px 40px rgba(0, 0, 0, 0.15)",
+                  border: "1px solid rgba(255, 255, 255, 0.2)",
                 },
               }}
             >
@@ -366,15 +563,17 @@ function DashboardContent() {
                   key={label}
                   onClick={handleClickUserMenu}
                   sx={{
-                    py: 1.5,
+                    py: 2,
                     px: 3,
+                    transition: "all 0.3s ease",
                     "&:hover": {
-                      backgroundColor: "rgba(76, 175, 80, 0.08)",
+                      backgroundColor: "rgba(76, 175, 80, 0.1)",
+                      transform: "translateX(5px)",
                     },
                   }}
                 >
                   {icon}
-                  <Typography textAlign="center" sx={{ fontWeight: 500 }}>
+                  <Typography textAlign="center" sx={{ fontWeight: 600 }}>
                     {label}
                   </Typography>
                 </MenuItem>
@@ -394,6 +593,7 @@ function DashboardContent() {
               background: "linear-gradient(180deg, #2E7D32 0%, #4CAF50 100%)",
               color: "white",
               width: drawerWidth,
+              backdropFilter: "blur(20px)",
             },
           }}
         >
@@ -408,10 +608,12 @@ function DashboardContent() {
                   sx={{
                     py: 2,
                     mx: 2,
-                    borderRadius: 2,
+                    borderRadius: 3,
                     mb: 1,
+                    transition: "all 0.3s ease",
                     "&:hover": {
                       backgroundColor: "rgba(255, 255, 255, 0.1)",
+                      transform: "translateX(10px)",
                     },
                   }}
                   onClick={() => setDrawerOpen(false)}
@@ -428,10 +630,12 @@ function DashboardContent() {
                   sx={{
                     py: 2,
                     mx: 2,
-                    borderRadius: 2,
+                    borderRadius: 3,
                     mb: 1,
+                    transition: "all 0.3s ease",
                     "&:hover": {
                       backgroundColor: "rgba(255, 255, 255, 0.1)",
+                      transform: "translateX(10px)",
                     },
                   }}
                 >
@@ -444,320 +648,312 @@ function DashboardContent() {
         </Drawer>
       )}
 
-      <Box
-        sx={{
-          marginTop: { xs: 10, md: 12 },
-          background: "linear-gradient(135deg, #f8f9fa 0%, #ffffff 50%, #f1f8e9 100%)",
-          minHeight: "100vh",
-          pb: 4,
-        }}
-      >
-        <Container maxWidth="xl" sx={{ pt: 4 }}>
-          {/* Header Section */}
-          <Paper
-            elevation={0}
-            sx={{
-              p: 4,
-              mb: 4,
-              borderRadius: 4,
-              background: "linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)",
-              border: "1px solid rgba(76, 175, 80, 0.1)",
-              position: "relative",
-              overflow: "hidden",
-              "&::before": {
-                content: '""',
-                position: "absolute",
-                top: 0,
-                left: 0,
-                right: 0,
-                height: 4,
-                background: "linear-gradient(90deg, #4CAF50 0%, #66BB6A 100%)",
-              },
-            }}
-          >
-            <Typography
-              variant="h3"
-              sx={{
-                mb: 1,
-                background: "linear-gradient(135deg, #2E7D32 0%, #4CAF50 100%)",
-                backgroundClip: "text",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                fontWeight: 800,
-                letterSpacing: "-0.5px",
-              }}
-            >
-              Catálogo de Productos
-            </Typography>
-            <Typography variant="h6" sx={{ color: "text.secondary", fontWeight: 400 }}>
-              Descubre nuestra selección premium de productos
-            </Typography>
-          </Paper>
+      {/* Header Section - Mejorado con efectos */}
+      <Box sx={{ 
+        marginTop: { xs: 6, md: 8 },
+        py: 3, 
+        textAlign: "center",
+        background: "transparent",
+        position: "relative",
+      }}>
+        <Typography
+          variant="h3"
+          sx={{
+            mb: 2,
+            background: "linear-gradient(135deg, #2E7D32 0%, #4CAF50 100%)",
+            backgroundClip: "text",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            fontWeight: 900,
+            letterSpacing: "-1px",
+            textShadow: "0 4px 8px rgba(76, 175, 80, 0.1)",
+            animation: "fadeInUp 0.8s ease-out",
+          }}
+        >
+          Catálogo de Productos
+        </Typography>
+        <Typography 
+          variant="h6" 
+          sx={{ 
+            color: "rgba(0,0,0,0.7)", 
+            fontWeight: 500,
+            letterSpacing: "0.5px",
+            animation: "fadeInUp 0.8s ease-out 0.2s both",
+          }}
+        >
+          Encuentra el producto que buscas en nuestra cuidada selección
+        </Typography>
+      </Box>
 
-          {/* Search Section */}
-          <Paper
-            elevation={0}
-            sx={{
-              p: 3,
-              mb: 4,
-              borderRadius: 4,
-              background: "rgba(255, 255, 255, 0.7)",
-              backdropFilter: "blur(10px)",
-              border: "1px solid rgba(76, 175, 80, 0.1)",
-            }}
-          >
+      {/* Search Section - Mejorado */}
+      <Box sx={{ 
+        px: { xs: 2, sm: 4, md: 6 }, 
+        mb: 3,
+        animation: "fadeInUp 0.8s ease-out 0.3s both",
+      }}>
             <SearchField
               label="Buscar productos..."
               variant="outlined"
               value={searchKeyword}
               onChange={handleKeywordChange}
               fullWidth
+              sx={{ display: 'block', maxWidth: 700, mx: 'auto' }}
               InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <SearchIcon sx={{ color: "#4CAF50" }} />
-                  </InputAdornment>
-                ),
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <Button
-                      variant="contained"
-                      onClick={handleSearch}
-                      sx={{
-                        borderRadius: 3,
-                        background: "linear-gradient(135deg, #4CAF50 0%, #66BB6A 100%)",
-                        fontWeight: 600,
-                        px: 3,
-                        "&:hover": {
-                          background: "linear-gradient(135deg, #388E3C 0%, #4CAF50 100%)",
-                          transform: "translateY(-1px)",
-                        },
-                      }}
-                    >
-                      Buscar
-                    </Button>
-                  </InputAdornment>
-                ),
-              }}
-            />
-          </Paper>
-
-          {/* Categories Section */}
-          <Paper
-            elevation={0}
-            sx={{
-              p: 3,
-              mb: 4,
-              borderRadius: 4,
-              background: "rgba(255, 255, 255, 0.7)",
-              backdropFilter: "blur(10px)",
-              border: "1px solid rgba(76, 175, 80, 0.1)",
-            }}
-          >
-            <Typography variant="h6" sx={{ mb: 3, fontWeight: 600, color: "#2E7D32" }}>
-              Categorías
-            </Typography>
-            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
-              {categories.map(({ value, label, icon }) => (
-                <CategoryButton
-                  key={value}
-                  selected={selectedCategory === value}
-                  onClick={() => handleCategoryChange(value)}
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon sx={{ color: "#4CAF50" }} />
+              </InputAdornment>
+            ),
+            endAdornment: (
+              <InputAdornment position="end">
+                <ModernButton
+                  variant="contained"
+                  onClick={handleSearch}
+                  sx={{ px: 4 }}
                 >
-                  <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                    <Typography sx={{ fontSize: "1.1rem" }}>{icon}</Typography>
-                    {label}
-                  </Box>
-                </CategoryButton>
-              ))}
-            </Box>
-          </Paper>
+                  Buscar
+                </ModernButton>
+              </InputAdornment>
+            ),
+          }}
+        />
+      </Box>
 
-          {/* Products Grid */}
-          <Box sx={{ mb: 4 }}>
-            {loading ? (
-              <Paper sx={{ p: 8, textAlign: "center", borderRadius: 4 }}>
-                <Typography variant="h6" sx={{ color: "text.secondary" }}>
-                  Cargando productos...
-                </Typography>
-              </Paper>
-            ) : error ? (
-              <Paper sx={{ p: 8, textAlign: "center", borderRadius: 4, bgcolor: "#ffebee" }}>
-                <Typography variant="h6" color="error">
-                  Error: {error}
-                </Typography>
-              </Paper>
-            ) : sortedProducts.length === 0 ? (
-              <Paper sx={{ p: 8, textAlign: "center", borderRadius: 4 }}>
-                <Typography variant="h6" sx={{ color: "text.secondary" }}>
-                  No se encontraron productos.
-                </Typography>
-              </Paper>
-            ) : (
-              <Grid container spacing={3}>
-                {displayProducts.map((product, index) => (
-                  <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
-                    <Fade in={true} timeout={300 + index * 100}>
-                      <StyledCard>
-                        {product.photo && (
-                          <CardMedia
-                            component="img"
-                            height="220"
-                            image={product.photo}
-                            alt={product.name}
-                            sx={{
-                              objectFit: "contain",
-                              backgroundColor: "#fafafa",
-                              p: 2,
-                            }}
-                          />
-                        )}
-                        <CardContent sx={{ flexGrow: 1, p: 3 }}>
-                          <Typography
-                            variant="h6"
-                            sx={{
-                              mb: 2,
-                              fontWeight: 700,
-                              color: "#2E7D32",
-                              overflow: "hidden",
-                              textOverflow: "ellipsis",
-                              whiteSpace: "nowrap",
-                            }}
-                          >
-                            {product.name}
-                          </Typography>
-
-                          {product.description && (
-                            <Typography
-                              variant="body2"
-                              sx={{
-                                mb: 3,
-                                color: "text.secondary",
-                                overflow: "hidden",
-                                textOverflow: "ellipsis",
-                                display: "-webkit-box",
-                                WebkitLineClamp: 3,
-                                WebkitBoxOrient: "vertical",
-                                lineHeight: 1.6,
-                              }}
-                            >
-                              {product.description}
-                            </Typography>
-                          )}
-
-                          <Box
-                            sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mt: "auto" }}
-                          >
-                            <Chip
-                              label={`$${product.price}`}
-                              sx={{
-                                background: "linear-gradient(135deg, #4CAF50 0%, #66BB6A 100%)",
-                                color: "white",
-                                fontWeight: 700,
-                                fontSize: "1rem",
-                                height: 36,
-                              }}
-                            />
-                            <Button
-                              variant="contained"
-                              size="small"
-                              onClick={handleContactClick}
-                              sx={{
-                                background: "linear-gradient(135deg, #2E7D32 0%, #4CAF50 100%)",
-                                borderRadius: 3,
-                                fontWeight: 600,
-                                textTransform: "none",
-                                px: 3,
-                                "&:hover": {
-                                  background: "linear-gradient(135deg, #1B5E20 0%, #2E7D32 100%)",
-                                  transform: "translateY(-2px)",
-                                },
-                              }}
-                            >
-                              Contactar
-                            </Button>
-                          </Box>
-                        </CardContent>
-                      </StyledCard>
-                    </Fade>
-                  </Grid>
-                ))}
-              </Grid>
-            )}
-          </Box>
-
-          {/* Pagination */}
-          {totalPages > 1 && (
-            <Paper
-              elevation={0}
+      {/* Categories Section - Mejorado */}
+      <Box sx={{ 
+        px: { xs: 2, sm: 4, md: 6 }, 
+        mb: 3,
+        animation: "fadeInUp 0.8s ease-out 0.45s both",
+      }}>
+        <Typography 
+          variant="h6" 
+          sx={{ 
+            mb: 4, 
+            fontWeight: 700, 
+            color: "#2E7D32", 
+            textAlign: "center",
+            letterSpacing: "0.5px",
+          }}
+        >
+          Categorías
+        </Typography>
+        <Box sx={{ display: "flex", flexWrap: "wrap", gap: 3, justifyContent: "center" }}>
+          {categories.map(({ value, label, icon }, index) => (
+            <Box
+              key={value}
               sx={{
-                p: 4,
-                mt: 6,
-                borderRadius: 4,
-                background: "rgba(255, 255, 255, 0.9)",
-                backdropFilter: "blur(10px)",
-                border: "1px solid rgba(76, 175, 80, 0.1)",
-                boxShadow: "0 4px 20px rgba(0, 0, 0, 0.05)",
+                animation: `fadeInUp 0.6s ease-out ${0.8 + index * 0.1}s both`,
               }}
             >
-              <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", flexWrap: "wrap", gap: 1 }}>
-                {/* Botón Anterior */}
-                <PaginationButton
-                  onClick={() => setCurrentPage(currentPage - 1)}
-                  disabled={currentPage === 1}
-                  sx={{
-                    px: 3,
-                    fontWeight: 600,
-                    fontSize: "0.9rem",
-                  }}
-                >
-                  Atrás
-                </PaginationButton>
-
-                {/* Números de página */}
-                {[...Array(totalPages).keys()].map((num) => {
-                  const page = num + 1
-                  return (
-                    <PaginationButton
-                      key={page}
-                      active={page === currentPage}
-                      onClick={() => setCurrentPage(page)}
-                      sx={{
-                        minWidth: 45,
-                        height: 45,
-                        fontWeight: page === currentPage ? 700 : 500,
-                      }}
-                    >
-                      {page}
-                    </PaginationButton>
-                  )
-                })}
-
-                {/* Botón Siguiente */}
-                <PaginationButton
-                  onClick={() => setCurrentPage(currentPage + 1)}
-                  disabled={currentPage === totalPages}
-                  sx={{
-                    px: 3,
-                    fontWeight: 600,
-                    fontSize: "0.9rem",
-                  }}
-                >
-                  Next
-                </PaginationButton>
-              </Box>
-
-              {/* Información adicional */}
-              <Box sx={{ textAlign: "center", mt: 3 }}>
-                <Typography variant="body2" sx={{ color: "text.secondary", fontWeight: 500 }}>
-                  Página {currentPage} de {totalPages} • Mostrando {displayProducts.length} de {sortedProducts.length}{" "}
-                  productos
-                </Typography>
-              </Box>
-            </Paper>
-          )}
-        </Container>
+              <CategoryButton
+                selected={selectedCategory === value}
+                onClick={() => handleCategoryChange(value)}
+              >
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+                  <Typography sx={{ fontSize: "1.2rem" }}>{icon}</Typography>
+                  {label}
+                </Box>
+              </CategoryButton>
+            </Box>
+          ))}
+        </Box>
       </Box>
+
+      {/* Products Grid - Mejorado */}
+      <Box sx={{ 
+        px: { xs: 2, sm: 4, md: 6 }, 
+        height: "calc(100vh - 280px)", 
+        overflow: "auto",
+        background: "transparent",
+        "&::-webkit-scrollbar": {
+          width: 8,
+        },
+        "&::-webkit-scrollbar-track": {
+          background: "rgba(0,0,0,0.05)",
+          borderRadius: 4,
+        },
+        "&::-webkit-scrollbar-thumb": {
+          background: "linear-gradient(135deg, #4CAF50 0%, #66BB6A 100%)",
+          borderRadius: 4,
+          "&:hover": {
+            background: "linear-gradient(135deg, #388E3C 0%, #4CAF50 100%)",
+          },
+        },
+      }}>
+        {loading ? (
+          <Box sx={{ p: 8, textAlign: "center" }}>
+            <Typography variant="h6" sx={{ color: "text.secondary" }}>
+              Cargando productos...
+            </Typography>
+          </Box>
+        ) : error ? (
+          <Box sx={{ p: 8, textAlign: "center" }}>
+            <Typography variant="h6" color="error">
+              Error: {error}
+            </Typography>
+          </Box>
+        ) : sortedProducts.length === 0 ? (
+          <Box sx={{ p: 8, textAlign: "center" }}>
+            <Typography variant="h6" sx={{ color: "text.secondary" }}>
+              No se encontraron productos.
+            </Typography>
+          </Box>
+        ) : (
+          <Grid container spacing={4}>
+            {displayProducts.map((product, index) => (
+              <Grid item xs={12} sm={6} md={6} lg={4} key={index}>
+                <Fade in={true} timeout={400 + index * 100}>
+                  <StyledCard>
+                    {product.photo && (
+                      <CardMedia
+                        component="img"
+                        height="220"
+                        image={product.photo}
+                        alt={product.name}
+                        sx={{
+                          objectFit: "cover",
+                          backgroundColor: "rgba(255,255,255,0.6)",
+                          p: 2,
+                          transition: "transform 0.2s ease",
+                          "&:hover": {
+                            transform: "scale(1.03)",
+                          },
+                        }}
+                      />
+                    )}
+                    <CardContent sx={{ flexGrow: 1, p: 2 }}>
+                      <Typography
+                        variant="h6"
+                        sx={{
+                          mb: 2,
+                          fontWeight: 800,
+                          color: "#2E7D32",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          whiteSpace: "nowrap",
+                        }}
+                      >
+                        {product.name}
+                      </Typography>
+
+                      {product.description && (
+                        <Typography
+                          variant="body2"
+                          sx={{
+                            mb: 3,
+                            color: "rgba(0,0,0,0.6)",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            display: "-webkit-box",
+                            WebkitLineClamp: 3,
+                            WebkitBoxOrient: "vertical",
+                            lineHeight: 1.6,
+                          }}
+                        >
+                          {product.description}
+                        </Typography>
+                      )}
+
+                      <Box
+                        sx={{ 
+                          display: "flex", 
+                          justifyContent: "space-between", 
+                          alignItems: "center", 
+                          mt: "auto",
+                          gap: 2,
+                        }}
+                      >
+                        <AnimatedChip label={`$${product.price}`} />
+                        <ModernButton
+                          variant="contained"
+                          size="small"
+                          onClick={handleContactClick}
+                          sx={{ px: 3 }}
+                        >
+                          Contactar
+                        </ModernButton>
+                      </Box>
+                    </CardContent>
+                  </StyledCard>
+                </Fade>
+              </Grid>
+            ))}
+          </Grid>
+        )}
+
+        {/* Pagination mejorada */}
+        {totalPages > 1 && (
+          <Box sx={{ p: 5, mt: 6, textAlign: "center" }}>
+            <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", flexWrap: "wrap", gap: 1 }}>
+              {/* Botón Anterior */}
+              <PaginationButton
+                onClick={() => setCurrentPage(currentPage - 1)}
+                disabled={currentPage === 1}
+                sx={{
+                  px: 4,
+                  fontWeight: 700,
+                  fontSize: "0.95rem",
+                }}
+              >
+                Atrás
+              </PaginationButton>
+
+              {/* Números de página */}
+              {[...Array(totalPages).keys()].map((num) => {
+                const page = num + 1
+                return (
+                  <PaginationButton
+                    key={page}
+                    active={page === currentPage}
+                    onClick={() => setCurrentPage(page)}
+                    sx={{
+                      minWidth: 48,
+                      height: 48,
+                      fontWeight: page === currentPage ? 800 : 600,
+                    }}
+                  >
+                    {page}
+                  </PaginationButton>
+                )
+              })}
+
+              {/* Botón Siguiente */}
+              <PaginationButton
+                onClick={() => setCurrentPage(currentPage + 1)}
+                disabled={currentPage === totalPages}
+                sx={{
+                  px: 4,
+                  fontWeight: 700,
+                  fontSize: "0.95rem",
+                }}
+              >
+                Next
+              </PaginationButton>
+            </Box>
+
+            {/* Información adicional */}
+            <Box sx={{ textAlign: "center", mt: 4 }}>
+              <Typography variant="body2" sx={{ color: "rgba(0,0,0,0.6)", fontWeight: 600 }}>
+                Página {currentPage} de {totalPages} • Mostrando {displayProducts.length} de {sortedProducts.length}{" "}
+                productos
+              </Typography>
+            </Box>
+          </Box>
+        )}
+      </Box>
+
+      <style>{`
+        @keyframes fadeInUp {
+          from {
+            opacity: 0;
+            transform: translateY(30px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+      `}</style>
     </>
   )
 }

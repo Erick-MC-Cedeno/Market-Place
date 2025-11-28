@@ -421,7 +421,7 @@ export default function Login() {
       </Container>
 
       {/* Estilos CSS para animaciones */}
-      <style jsx global>{`
+      <style>{`
         @keyframes pulse {
           0%,
           100% {

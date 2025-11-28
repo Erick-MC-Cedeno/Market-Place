@@ -30,6 +30,8 @@
     "@nestjs/throttler": "^6.4.0",
     "@types/connect-redis": "^0.0.23",
     "bcrypt": "^5.1.1",
+    "bcryptjs": "^3.0.3",
+    "body-parser": "^2.2.1",
     "bull": "^4.16.5",
     "bullmq": "^5.40.0",
     "class-transformer": "^0.5.1",
